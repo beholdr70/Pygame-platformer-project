@@ -1,4 +1,5 @@
 import character_class
+import level_data
 import pygame
 import sys
 
@@ -7,9 +8,17 @@ import sys
 player_group = pygame.sprite.GroupSingle()
 player_group.add(character_class.PlayerChar())
 
-screen = pygame.display.set_mode([1024, 768])
+resolution = (1680, 945)
+display = pygame.Surface((960, 540))
+screen = pygame.display.set_mode(resolution)
+
 clock = pygame.time.Clock()
 FPS = 60
+
+# level
+level_data.load([[level_data.LevelTile((480, 400), (960, 10), floor=True), 'title'],
+                 [level_data.LevelTile((0, 520), (960, 10), floor=True), 'title']])
+level_group = level_data.level_tile_group
 
 
 # functions
@@ -18,26 +27,22 @@ def close_game():
     sys.exit()
 
 
-def config_load():
-    global screen
-    config_params = open('config.txt').readlines()
-    screen = pygame.display.set_mode(eval(config_params[0].split('=')[1].strip()))
-
-
 # code to run the game
 
 if __name__ == '__main__':
-    pygame.init()
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 close_game()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
-                    config_load()
-        screen.fill((0, 0, 0))
+                    pass
+        display.fill((0, 0, 0))
         for player in player_group:
             player.update()
-        pygame.display.flip()
+        player_group.draw(display)
+        level_group.draw(display)
+        screen.blit(pygame.transform.scale(display, resolution), (0, 0))
+        pygame.display.update()
         clock.tick(FPS)
     pygame.quit()
