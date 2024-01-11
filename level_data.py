@@ -1,27 +1,42 @@
 import pygame
+from pytmx.util_pygame import load_pygame
 
 # sprite groups
 level_tile_group, interactive_group = pygame.sprite.Group(), pygame.sprite.Group()
+decor_back_group, decor_front_group = pygame.sprite.Group(), pygame.sprite.Group()
+background_group = pygame.sprite.Group()
+
+# Variables
+spawnpoint = None
 
 
-def load(tile_data):
-    for obj in tile_data:
-        if obj[1] == 'interactive':
-            interactive_group.add(obj[0])
-        elif obj[1] == 'title':
-            level_tile_group.add(obj[0])
+def load(level_name):
+    global spawnpoint
+    tile_data = load_pygame('levels/TMX/' + level_name)
+    group = []
+    for layer in tile_data.visible_layers:
+        if 'Platforms' in layer.name:
+            group = level_tile_group
+        elif 'Back' in layer.name:
+            group = decor_back_group
+        elif 'Front' in layer.name:
+            group = decor_front_group
+        if hasattr(layer, 'data'):
+            for x, y, surface in layer.tiles():
+                group.add(LevelTile(((x - 1) * 16, y * 16), surface))
+    for obj in tile_data.objects:
+        if obj.type == 'Background':
+            background_group.add(LevelTile((obj.x - 16, obj.y), obj.image))
+    spawnpoint_obj = tile_data.get_object_by_name('Spawn Point')
+    spawnpoint = (spawnpoint_obj.x, spawnpoint_obj.y)
+    for img in background_group:
+        img.image = pygame.transform.scale(img.image, (1120, 640))
 
 
 class LevelTile(pygame.sprite.Sprite):
 
-    def __init__(self, pos, size, img=None, floor=False):
-
+    def __init__(self, position, surface):
         super().__init__()
-        self.image = pygame.image.load('char.png')
-        # self.rect = self.image.get_rect(lefttop=(pos))
-        self.rect = pygame.Rect(pos, size)
-
-        if floor:
-            self.is_floor = True
-        else:
-            self.is_floor = False
+        self.image = surface
+        self.mask = pygame.mask.from_surface(self.image)
+        self.rect = self.image.get_rect(topleft=position)
