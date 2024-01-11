@@ -34,7 +34,7 @@ def camera_update(player_c):
 
     # x movement
     x_pos_lst = [[tile.rect.x for tile in group] for group in level_groups]
-    if player_c.rect.x in range(size[0] // 2 - 30,
+    if player_c.rect.center[0] in range(size[0] // 2 - 30,
                                 size[0] // 2 + 31) and ((any(any(x > size[0] for x in group) for group in x_pos_lst) and
                                                          player_c.movement[0] > 0) or (any(
         any(x < -17 for x in group) for group in x_pos_lst) and player_c.movement[0] < 0)):
@@ -46,9 +46,9 @@ def camera_update(player_c):
     # y movement
     y_pos_lst = [[tile.rect.y for tile in group] for group in level_groups]
     if (player_c.rect.y >= size[1] // 2 and any(any(y > size[1] for y in group) for group in y_pos_lst) and
-        player_c.movement[1] > 2) or (
+        player_c.movement[1] > 9) or (
             player_c.rect.y <= size[1] // 2 and any(any(y < 0 for y in group) for group in y_pos_lst) and
-            player_c.movement[1] < -11):
+            player_c.movement[1] < -19):
         for group in level_groups:
             for tile in group:
                 tile.rect.y -= player_c.movement[1]

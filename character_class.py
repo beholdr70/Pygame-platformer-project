@@ -14,7 +14,7 @@ class PlayerChar(pygame.sprite.Sprite):
         # body collisions
         self.image = pygame.image.load('character.png')
         self.mask = pygame.mask.from_surface(self.image)
-        self.rect = self.image.get_rect(topleft=spawnpoint)
+        self.rect = self.image.get_rect(topleft=(spawnpoint[0], spawnpoint[1] - 42))
 
         # states
         self.on_ground = False
@@ -101,11 +101,10 @@ class PlayerChar(pygame.sprite.Sprite):
         if keys[pygame.K_SPACE] and any((self.double_jump_charge, self.on_ground)) and not self.dash:
             if self.on_ground or self.timers['on_ground'] + 100 > self.timers['air_time']:
                 self.gravity_speed = self.jump_force
-                self.movement[1] += abs(self.gravity_speed)
             elif not self.on_ground and self.timers['air_time'] >= self.timers['on_ground'] + 400:
                 self.double_jump_charge -= 1
                 self.gravity_speed = self.jump_force - 4
-                self.movement[1] += abs(self.jump_force - 4)
+            self.movement[1] += self.gravity_speed
         self.prevent_collisions('y')
 
         # interaction
@@ -128,14 +127,17 @@ class PlayerChar(pygame.sprite.Sprite):
                     self.rect.left = collision_tile.rect.right
             if axis == 'y':
                 if self.movement[1] > 0:
-                    self.movement[1] = collision_tile.rect.y - (self.rect.y - self.movement[1])
+                    self.movement[1] = collision_tile.rect.y - self.rect.top + self.movement[1] - self.rect.height
                     self.rect.bottom = collision_tile.rect.top
                     self.on_ground = True
                 if self.movement[1] < 0:
-                    self.movement[1] = collision_tile.rect.y - (self.rect.y - self.movement[1])
+                    self.movement[1] = self.rect.top + self.movement[1] - collision_tile.rect.y
                     self.rect.top = collision_tile.rect.bottom
+                    print(self.movement[1])
                     self.gravity_speed = 0
         self.ground_check()
+        if self.movement[1] > 700:
+            pass
 
     def update(self):
         self.movement = [0, 0]
