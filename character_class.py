@@ -1,9 +1,27 @@
 import pygame
+from random import randint
 import level_data
+
+pygame.mixer.init()
+
+
+# load character spritesheet function
+def load_spritesheet(name, frames):
+    image = pygame.image.load(f'Resources/Char_sprites/{name}')
+    end_lst = []
+    width = image.get_width() // frames
+    height = image.get_height()
+    x = 0
+    for frame in range(frames):
+        frame_surf = pygame.Surface((width, height), pygame.SRCALPHA, 32)
+        frame_surf.blit(image, (x, 0))
+        end_lst.append(frame_surf)
+        x -= width
+    return end_lst
 
 
 class PlayerChar(pygame.sprite.Sprite):
-    def __init__(self, spawnpoint):
+    def __init__(self, spawnpoint, upgrade=0):
         # initialization
         super().__init__()
         self.timers = {'dash': pygame.time.get_ticks(), 'on_ground': pygame.time.get_ticks(),
@@ -11,41 +29,53 @@ class PlayerChar(pygame.sprite.Sprite):
         self.interactable = []
         self.movement = [0, 0]
 
+        # animation
+        self.frame = 0
+        self.idle = load_spritesheet('_Idle.png', 10)
+        self.run = load_spritesheet('_Run.png', 10)
+        self.dash_anim = load_spritesheet('_Dash.png', 2)
+        self.fall = load_spritesheet('_Fall.png', 3)
+        self.jump = load_spritesheet('_Jump.png', 3)
+
+        # SFX
+        self.run_sound = [pygame.mixer.Sound(f'Resources/Sounds/Character/Walk/Walk ({i}).ogg') for i in range(1, 6)]
+        self.jump_sound = [pygame.mixer.Sound(f'Resources/Sounds/Character/Jump/Pre Jump/Pre Jump ({i}).wav') for i in
+                           range(1, 6)]
+        self.dash_sound = None
+
         # body collisions
-        self.image = pygame.image.load('character.png')
-        self.mask = pygame.mask.from_surface(self.image)
-        self.rect = self.image.get_rect(topleft=(spawnpoint[0], spawnpoint[1] - 42))
+        self.image = pygame.Surface.copy(self.idle[0])
+        self.rect = self.image.get_rect(topleft=(spawnpoint[0], spawnpoint[1] - 80))
 
         # states
         self.on_ground = False
         self.dash = False
         self.interaction = False
-        self.pushing = False
 
         # movement parameters
-        self.space_down = False
         self.speed = 2
         self.acceleration = 0
         self.gravity_speed = 0
-        self.jump_force = -10
+        self.jump_force = -14
 
         # ability charges
+        self.upgrade = upgrade
         self.dash_charges = 2
         self.double_jump_charge = 1
-        self.launch_charge = 1
 
     # applying gravity on player
     def gravity(self):
         if not self.dash:
             self.gravity_speed += 1
-            if self.gravity_speed > 10:
-                self.gravity_speed = 10
+            if self.gravity_speed > 5:
+                self.gravity_speed = 5
             if self.on_ground:
                 self.gravity_speed = 0
             self.rect.y += self.gravity_speed
             self.movement[1] += self.gravity_speed
             self.prevent_collisions('y')
 
+    # applying momentum on player
     def momentum(self):
         if self.acceleration:
             acceleration_coefficient = int(self.acceleration / abs(self.acceleration))
@@ -68,8 +98,6 @@ class PlayerChar(pygame.sprite.Sprite):
             self.double_jump_charge = 1
             if self.timers['on_ground'] >= self.timers['air_time'] + 500 and not self.dash:
                 self.dash_charges = 2
-            if self.timers['on_ground'] >= self.timers['air_time'] + 1000:
-                self.launch_charge = 1
         else:
             self.timers['air_time'] = pygame.time.get_ticks()
 
@@ -87,7 +115,7 @@ class PlayerChar(pygame.sprite.Sprite):
             self.acceleration += 2.5
             self.movement[0] += self.speed
         if keys[pygame.K_LSHIFT] and self.dash_charges and self.timers['dash'] + 200 <= self.timers['current'] and (
-                keys[pygame.K_d] or keys[pygame.K_a]):
+                keys[pygame.K_d] or keys[pygame.K_a]) and self.upgrade > 1:
             self.dash = True
             self.timers['dash'] = pygame.time.get_ticks()
             self.dash_charges -= 1
@@ -99,22 +127,28 @@ class PlayerChar(pygame.sprite.Sprite):
 
         # vertical movement
         if keys[pygame.K_SPACE] and any((self.double_jump_charge, self.on_ground)) and not self.dash:
-            if self.on_ground or self.timers['on_ground'] + 100 > self.timers['air_time']:
+            if self.on_ground or self.timers['on_ground'] + 150 > self.timers['air_time'] and self.movement[1] >= 0:
                 self.gravity_speed = self.jump_force
-            elif not self.on_ground and self.timers['air_time'] >= self.timers['on_ground'] + 400:
+                self.movement[1] = self.gravity_speed
+                if self.on_ground:
+                    self.jump_sound[randint(0, 4)].play()
+            elif not self.on_ground and self.timers['air_time'] >= self.timers['on_ground'] + 400 and self.upgrade > 0:
                 self.double_jump_charge -= 1
                 self.gravity_speed = self.jump_force - 4
-            self.movement[1] += self.gravity_speed
+                self.movement[1] = self.gravity_speed
         self.prevent_collisions('y')
 
         # interaction
-        if keys[pygame.K_e] and not any([self.dash, self.interaction, self.pushing]):
+        if keys[pygame.K_e] and not any([self.dash, self.interaction]):
             if self.interactable:
                 pass
                 # self.interactable[0].interact()
 
     # preventing collisions with floor and walls
     def prevent_collisions(self, axis):
+        rect_cop = self.rect.copy()
+        self.rect = pygame.Rect(0, 0, 15, 20)
+        self.rect.midbottom = rect_cop.midbottom
         collisions = pygame.sprite.spritecollide(self, level_data.level_tile_group, False)
         for collision_tile in collisions:
             # preventing clipping
@@ -133,11 +167,11 @@ class PlayerChar(pygame.sprite.Sprite):
                 if self.movement[1] < 0:
                     self.movement[1] = self.rect.top + self.movement[1] - collision_tile.rect.y
                     self.rect.top = collision_tile.rect.bottom
-                    print(self.movement[1])
                     self.gravity_speed = 0
+        rect_cop = self.rect.copy()
+        self.rect = self.image.get_rect()
+        self.rect.midbottom = rect_cop.midbottom
         self.ground_check()
-        if self.movement[1] > 700:
-            pass
 
     def update(self):
         self.movement = [0, 0]
@@ -159,3 +193,33 @@ class PlayerChar(pygame.sprite.Sprite):
         self.gravity()
         self.char_inputs()
         self.momentum()
+
+        # animation update
+        x_flip = False
+        if self.movement[0] < 0:
+            x_flip = True
+
+        if self.dash:
+            anim_lst = self.dash_anim
+        elif self.movement[1] > 0:
+            anim_lst = self.fall
+        elif self.movement[1] < 0:
+            anim_lst = self.jump
+        elif self.movement[0] != 0:
+            anim_lst = self.run
+        else:
+            anim_lst = self.idle
+
+        anim_speed = 6
+        if self.frame > len(anim_lst) * anim_speed - 1:
+            self.frame = 0
+        if self.frame % anim_speed == 0:
+            self.image = pygame.transform.flip(pygame.Surface.copy(anim_lst[self.frame // anim_speed]), x_flip, False)
+        self.frame += 1
+
+        # SFX update
+        if self.movement[0] != 0 and not pygame.mixer.get_busy() and self.on_ground and self.frame % (
+                anim_speed * 4) == 0:
+            self.run_sound[randint(0, 4)].play()
+        elif self.movement[0] == 0 and self.movement[1] == 0:
+            pygame.mixer.stop()

@@ -5,8 +5,8 @@
     },
     "activeFile": "levels/TMX/level_1.tmx",
     "expandedProjectPaths": [
-        "levels/TSX",
         ".",
+        "levels/TSX",
         ".idea",
         "levels",
         "levels/TMX"
@@ -21,15 +21,15 @@
         },
         "levels/TMX/level_1.tmx": {
             "expandedGroupLayers": [
-                20,
                 19,
-                6
+                6,
+                20
             ],
-            "scale": 0.75,
-            "selectedLayer": 8,
+            "scale": 1.5,
+            "selectedLayer": 11,
             "viewCenter": {
-                "x": 586,
-                "y": 261.33333333333337
+                "x": 165.66666666666669,
+                "y": 436
             }
         },
         "levels/TSX/BackGround.tsx": {
