@@ -5,10 +5,10 @@
     },
     "activeFile": "levels/TMX/level_1.tmx",
     "expandedProjectPaths": [
-        ".",
-        "levels/TSX",
         ".idea",
+        "levels/TSX",
         "levels",
+        ".",
         "levels/TMX"
     ],
     "fileStates": {
@@ -21,15 +21,15 @@
         },
         "levels/TMX/level_1.tmx": {
             "expandedGroupLayers": [
-                19,
+                20,
                 6,
-                20
+                19
             ],
-            "scale": 1.5,
-            "selectedLayer": 11,
+            "scale": 0.5,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 165.66666666666669,
-                "y": 436
+                "x": 1189,
+                "y": 374
             }
         },
         "levels/TSX/BackGround.tsx": {
@@ -54,7 +54,7 @@
         },
         "levels/TSX/props2.tsx": {
             "dynamicWrapping": false,
-            "scaleInDock": 1.5,
+            "scaleInDock": 0.33,
             "scaleInEditor": 1
         }
     },
