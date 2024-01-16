@@ -1,6 +1,7 @@
 import pygame
 from random import randint
 import level_data
+from math import ceil
 
 pygame.mixer.init()
 
@@ -38,10 +39,11 @@ class PlayerChar(pygame.sprite.Sprite):
         self.jump = load_spritesheet('_Jump.png', 3)
 
         # SFX
-        self.run_sound = [pygame.mixer.Sound(f'Resources/Sounds/Character/Walk/Walk ({i}).ogg') for i in range(1, 6)]
+        self.run_sound = [pygame.mixer.Sound(f'Resources/Sounds/Character/Walk/Walk ({i}).wav') for i in range(1, 5)]
         self.jump_sound = [pygame.mixer.Sound(f'Resources/Sounds/Character/Jump/Pre Jump/Pre Jump ({i}).wav') for i in
                            range(1, 6)]
         self.dash_sound = None
+        self.SFX = pygame.mixer.Channel(3)
 
         # body collisions
         self.image = pygame.Surface.copy(self.idle[0])
@@ -53,14 +55,14 @@ class PlayerChar(pygame.sprite.Sprite):
         self.interaction = False
 
         # movement parameters
-        self.speed = 2
+        self.speed = 1
         self.acceleration = 0
         self.gravity_speed = 0
         self.jump_force = -14
 
         # ability charges
         self.upgrade = upgrade
-        self.dash_charges = 2
+        self.dash_charges = 1
         self.double_jump_charge = 1
 
     # applying gravity on player
@@ -77,16 +79,19 @@ class PlayerChar(pygame.sprite.Sprite):
 
     # applying momentum on player
     def momentum(self):
+        move = 0
         if self.acceleration:
-            acceleration_coefficient = int(self.acceleration / abs(self.acceleration))
-            self.acceleration = abs(self.acceleration) // 4 * 3
-            if self.acceleration < 1:
+            acceleration_coefficient = self.acceleration // abs(self.acceleration)
+            self.acceleration = abs(self.acceleration) - 0.15 * self.speed
+            if self.acceleration < 0.1:
                 self.acceleration = 0
-            if self.acceleration > 2 and not self.dash:
-                self.acceleration = 2
+            if self.acceleration > 3 and not self.dash:
+                self.acceleration = 3
+            move = ceil(self.acceleration / 2)
+            move *= acceleration_coefficient
             self.acceleration *= acceleration_coefficient
-        self.rect.x += self.acceleration
-        self.movement[0] += self.acceleration
+        self.rect.x += move
+        self.movement[0] += move
         self.prevent_collisions('x')
 
     # checking for ground collision
@@ -108,11 +113,11 @@ class PlayerChar(pygame.sprite.Sprite):
         # horizontal movement
         if keys[pygame.K_a] and not self.dash:
             self.rect.x -= self.speed
-            self.acceleration -= 2.5
+            self.acceleration -= 0.25 * self.speed
             self.movement[0] -= self.speed
         if keys[pygame.K_d] and not self.dash:
             self.rect.x += self.speed
-            self.acceleration += 2.5
+            self.acceleration += 0.25 * self.speed
             self.movement[0] += self.speed
         if keys[pygame.K_LSHIFT] and self.dash_charges and self.timers['dash'] + 200 <= self.timers['current'] and (
                 keys[pygame.K_d] or keys[pygame.K_a]) and self.upgrade > 1:
@@ -120,9 +125,9 @@ class PlayerChar(pygame.sprite.Sprite):
             self.timers['dash'] = pygame.time.get_ticks()
             self.dash_charges -= 1
             if keys[pygame.K_a]:
-                self.acceleration = -50
+                self.acceleration = -20
             elif keys[pygame.K_d]:
-                self.acceleration = 50
+                self.acceleration = 20
         self.prevent_collisions('x')
 
         # vertical movement
@@ -131,10 +136,10 @@ class PlayerChar(pygame.sprite.Sprite):
                 self.gravity_speed = self.jump_force
                 self.movement[1] = self.gravity_speed
                 if self.on_ground:
-                    self.jump_sound[randint(0, 4)].play()
+                    self.SFX.play(self.jump_sound[randint(0, 4)], fade_ms=100)
             elif not self.on_ground and self.timers['air_time'] >= self.timers['on_ground'] + 400 and self.upgrade > 0:
                 self.double_jump_charge -= 1
-                self.gravity_speed = self.jump_force - 4
+                self.gravity_speed = self.jump_force
                 self.movement[1] = self.gravity_speed
         self.prevent_collisions('y')
 
@@ -154,10 +159,10 @@ class PlayerChar(pygame.sprite.Sprite):
             # preventing clipping
             if axis == 'x':
                 if self.movement[0] > 0:
-                    self.movement[0] = collision_tile.rect.right - (self.rect.x - self.movement[0])
+                    self.movement[0] = collision_tile.rect.right + (self.rect.x - self.movement[0])
                     self.rect.right = collision_tile.rect.left
                 if self.movement[0] < 0:
-                    self.movement[0] = collision_tile.rect.left - (self.rect.x - self.movement[0])
+                    self.movement[0] = collision_tile.rect.right + self.movement[0] - self.rect.x
                     self.rect.left = collision_tile.rect.right
             if axis == 'y':
                 if self.movement[1] > 0:
@@ -218,8 +223,8 @@ class PlayerChar(pygame.sprite.Sprite):
         self.frame += 1
 
         # SFX update
-        if self.movement[0] != 0 and not pygame.mixer.get_busy() and self.on_ground and self.frame % (
-                anim_speed * 4) == 0:
-            self.run_sound[randint(0, 4)].play()
+        if self.movement[0] != 0 and not self.SFX.get_busy() and self.on_ground and self.frame % (
+                anim_speed * 2) == 0:
+            self.SFX.play(self.run_sound[randint(0, 3)])
         elif self.movement[0] == 0 and self.movement[1] == 0:
-            pygame.mixer.stop()
+            self.SFX.stop()

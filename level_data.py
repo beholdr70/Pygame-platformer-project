@@ -1,10 +1,11 @@
 import pygame
 from pytmx.util_pygame import load_pygame
+from main import size
 
 # sprite groups
 level_tile_group, interactive_group = pygame.sprite.Group(), pygame.sprite.Group()
 decor_back_group, decor_front_group = pygame.sprite.Group(), pygame.sprite.Group()
-background_group = pygame.sprite.Group()
+background_group = []
 hint_group = pygame.sprite.Group()
 
 # Variables
@@ -18,7 +19,7 @@ def load(level_name):
 
     # get spawnpoint
     spawnpoint_obj = tile_data.get_object_by_name('Spawn Point')
-    spawnpoint = (spawnpoint_obj.x, spawnpoint_obj.y)
+    spawnpoint = [spawnpoint_obj.x, spawnpoint_obj.y]
 
     # get tiles
     for layer in tile_data.visible_layers:
@@ -30,17 +31,18 @@ def load(level_name):
             group = decor_front_group
         if hasattr(layer, 'data'):
             for x, y, surface in layer.tiles():
-                group.add(LevelTile(((x - 1) * 16, y * 16), surface))
+                group.add(LevelTile(((x - 1) * 16, y * 16), surface.convert_alpha()))
 
     # get objects
     for obj in tile_data.objects:
         if obj.type == 'Background':
-            background_group.add(LevelTile((obj.x - 16, obj.y), pygame.transform.scale(obj.image, (1120, 640))))
+            background_group.append(pygame.transform.scale(obj.image.convert_alpha(), size))
         if obj.type == 'Checkbox':
             interactive_group.add(
                 InteractiveObj((obj.x - 16, obj.y), pygame.Surface((int(obj.width), int(obj.height)))))
         if obj.type == 'Graphic':
-            hint_group.add(LevelTile((obj.x - 16, obj.y), pygame.transform.scale(obj.image, (obj.width, obj.height))))
+            hint_group.add(LevelTile((obj.x - 16, obj.y),
+                                     pygame.transform.scale(obj.image.convert_alpha(), (obj.width, obj.height))))
 
 
 class LevelTile(pygame.sprite.Sprite):
