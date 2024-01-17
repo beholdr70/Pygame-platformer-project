@@ -1,4 +1,4 @@
 screen_size = [1680, 945]
-fullscreen = False
+fullscreen = True
 music_volume = 0.2
 sfx_volume = 1

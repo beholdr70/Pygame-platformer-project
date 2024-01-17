@@ -1,5 +1,6 @@
 import character_class
 import level_data
+import menu
 import pygame
 import sys
 
@@ -19,23 +20,28 @@ clock = pygame.time.Clock()
 FPS = 60
 
 # Setup Variables
+# Menu Related Variables
+background = menu.background
+
 #  Level Related Variables
 current_level, spawnpoint, platform_group, decor_back_group, decor_front_group = None, None, None, None, None
-background, interactive_group, hint_group, hint_alpha = None, None, None, None
+interactive_group, hint_group, hint_alpha = None, None, None
 parallax_background_offset = 0
 
 #  Player Related Variable
 player_group = None
 
 # Music Related Variables
-music, ambience = None, None
+music, ambience = pygame.mixer.Sound('Resources/Sounds/Menu/Music/Music.wav'), pygame.mixer.Sound(
+    'Resources/Sounds/Menu/Ambience/Ambience.wav')
 music_channel, ambience_channel = pygame.mixer.Channel(0), pygame.mixer.Channel(1)
 
 # Cutscene Related Variables
 fade_in_out = pygame.surface.Surface(size).convert_alpha()
 fade_in_out.fill('Black')
+fade_in_alpha = 255
 point = None
-cutscene = True
+cutscene = False
 
 
 # setting up level
@@ -86,7 +92,10 @@ def load_settings():
     # changing the sound settings
     for channel in (music_channel, ambience_channel):
         channel.set_volume(settings['music_volume'])
-    list(player_group)[0].SFX.set_volume(settings['sfx_volume'])
+    if player_group:
+        list(player_group)[0].SFX.set_volume(settings['sfx_volume'])
+
+load_settings()
 
 
 # Exit Functions
@@ -106,7 +115,7 @@ def camera_update(player_c):
     offset = [player_c.rect.center[0] - camera_rect.center[0], player_c.rect.center[1] - camera_rect.center[1]]
 
     # x movement
-    if (any(any(x > size[0] for x in group) for group in x_pos_lst) and offset[0] > 0) or (any(
+    if (any(any(x - 1 > size[0] for x in group) for group in x_pos_lst) and offset[0] > 0) or (any(
             any(x < -17 for x in group) for group in x_pos_lst) and offset[0] < 0):
         for group in level_groups:
             for tile in group:
@@ -143,9 +152,6 @@ def draw_background():
 
 # code to run the game
 if __name__ == '__main__':
-    setup()
-    load_settings()
-    fade_in_alpha = 255
     pause = False
     while True:
 
@@ -161,79 +167,97 @@ if __name__ == '__main__':
                 if event.key == pygame.K_ESCAPE:
                     pause = not pause
 
+            if menu.menu_state:
+
+                # activating buttons
+                if menu.play_button.handle_event(event, 'START'):
+                    setup()
+                    cutscene = True
+                menu.quit_button.handle_event(event, 'QUIT')
+                menu.options_button.handle_event(event, '')
+
         if not pause:
-            if level_data.level_exit:
-                cutscene = True
-                point = size[0] + 60
+            if not menu.menu_state:
+                if level_data.level_exit:
+                    cutscene = True
+                    point = size[0] + 60
 
-            if cutscene:
-                # play cutscene
-                if fade_in_alpha > 255:
-                    fade_in_alpha = 255
-                elif fade_in_alpha < 0:
-                    fade_in_alpha = 0
-                fade_in_out.set_alpha(fade_in_alpha)
-                if point == spawnpoint[0]:
-                    fade_in_alpha -= 1
-                else:
-                    fade_in_alpha += 4
-                player = list(player_group)[0]
-                camera_update(player)
-                if player.rect.left < point:
-                    player.rect.x += 1
-                    player.movement[0] += 1
-                    player.animate()
-                    player.sound()
-                else:
+                if cutscene:
+                    # play cutscene
+                    if fade_in_alpha > 255:
+                        fade_in_alpha = 255
+                    elif fade_in_alpha < 0:
+                        fade_in_alpha = 0
+                    fade_in_out.set_alpha(fade_in_alpha)
                     if point == spawnpoint[0]:
-                        cutscene = False
+                        fade_in_alpha -= 1
                     else:
-                        for group in [player_group, decor_front_group, decor_back_group, player_group, hint_group,
-                                      background, interactive_group, platform_group]:
-                            if group != background:
-                                group.empty()
-                            else:
-                                level_data.background_group = []
-                        setup()
-                        level_data.level_exit = False
-                        music_channel.stop()
-                        ambience_channel.stop()
-                        point = spawnpoint[0]
-
-            else:
-                # player update
-                for player in player_group:
+                        fade_in_alpha += 4
+                    player = list(player_group)[0]
                     camera_update(player)
-                    player.update()
-                    if player.rect.center[0] not in range(size[0]) or player.rect.center[1] not in range(size[1]):
-                        player.rect.topleft = (spawnpoint[0], spawnpoint[1] - 80)
+                    if player.rect.left < point:
+                        player.rect.x += 1
+                        player.movement[0] += 1
+                        player.animate()
+                        player.sound()
+                    else:
+                        if point == spawnpoint[0]:
+                            cutscene = False
+                        else:
+                            for group in [player_group, decor_front_group, decor_back_group, player_group, hint_group,
+                                          background, interactive_group, platform_group]:
+                                if group != background:
+                                    group.empty()
+                                else:
+                                    level_data.background_group = []
+                            setup()
+                            level_data.level_exit = False
+                            music_channel.stop()
+                            ambience_channel.stop()
+                            point = spawnpoint[0]
+
+                else:
+                    # player update
+                    for player in player_group:
+                        camera_update(player)
+                        player.update()
+                        if player.rect.center[0] not in range(size[0]) or player.rect.center[1] not in range(size[1]):
+                            player.rect.topleft = (spawnpoint[0], spawnpoint[1] - 80)
 
             # display update
             display.fill((0, 0, 0))
             draw_background()
-            decor_back_group.draw(display)
 
-            # changing transparency of objects in hint group to hide/show them
-            if not cutscene:
-                if pygame.sprite.spritecollide(player, hint_group, False):
-                    hint_alpha += 5
-                    if hint_alpha > 255:
-                        hint_alpha = 255
-                else:
-                    hint_alpha -= 5
-                    if hint_alpha < 0:
-                        hint_alpha = 0
-            for hint in hint_group:
-                hint.image.set_alpha(hint_alpha)
+            if not menu.menu_state:
 
-            hint_group.draw(display)
-            player_group.draw(display)
-            platform_group.draw(display)
-            decor_front_group.draw(display)
+                decor_back_group.draw(display)
 
-            # Fading into the level at the start
-            if cutscene:
-                display.blit(fade_in_out, (0, 0))
+                # changing transparency of objects in hint group to hide/show them
+                if not cutscene:
+                    if pygame.sprite.spritecollide(player, hint_group, False):
+                        hint_alpha += 5
+                        if hint_alpha > 255:
+                            hint_alpha = 255
+                    else:
+                        hint_alpha -= 5
+                        if hint_alpha < 0:
+                            hint_alpha = 0
+                for hint in hint_group:
+                    hint.image.set_alpha(hint_alpha)
+
+                hint_group.draw(display)
+                player_group.draw(display)
+                platform_group.draw(display)
+                decor_front_group.draw(display)
+
+                # Fading into the level at the start
+                if cutscene:
+                    display.blit(fade_in_out, (0, 0))
+            else:
+                display.blit(menu.logo, (15, 15))
+                for button in [menu.options_button, menu.play_button, menu.quit_button]:
+                    button.check_hover(pygame.mouse.get_pos())
+                    button.draw(display)
             screen.blit(pygame.transform.scale(display, settings['screen_size']), (0, 0))
             pygame.display.update()
 

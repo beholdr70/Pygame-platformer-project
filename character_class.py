@@ -176,7 +176,7 @@ class PlayerChar(pygame.sprite.Sprite):
 
         self.prevent_collisions('y')
 
-        # !Interaction (TBA)!
+        # Interaction
         if keys[pygame.K_e] and not any([self.dash, self.interaction]) and self.on_ground:
             self.interaction = True
             if self.interactable:
@@ -280,7 +280,7 @@ class PlayerChar(pygame.sprite.Sprite):
         if self.timers['current'] >= self.timers['dash'] + 200:
             self.dash = False
 
-        # !check for interactable objects nearby (TBA)!
+        # search for interactive object nearby
         if pygame.sprite.spritecollideany(self, level_data.interactive_group):
             self.interactable = pygame.sprite.spritecollide(self, level_data.interactive_group, dokill=False)
         else:
