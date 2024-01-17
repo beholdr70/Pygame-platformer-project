@@ -5,32 +5,43 @@ import sys
 
 pygame.mixer.init()
 
-# screen variables
+# Screen Variables
 zoom = 26
 size = (16 * zoom, 9 * zoom)
 camera_rect = pygame.Rect((0, 0), size)
-resolution = (1920, 1080)
 display = pygame.Surface(size)
 pygame.display.set_caption('Ilios')
-screen = pygame.display.set_mode(resolution)
+pygame.display.set_icon(pygame.image.load(f'Resources/UI_graphics/Icon.png'))
+screen = pygame.display.set_mode([i - 100 for i in (pygame.display.get_desktop_sizes()[0])])
 
-# clock
+# Clock
 clock = pygame.time.Clock()
 FPS = 60
 
-# setup variables
+# Setup Variables
+#  Level Related Variables
 current_level, spawnpoint, platform_group, decor_back_group, decor_front_group = None, None, None, None, None
 background, interactive_group, hint_group, hint_alpha = None, None, None, None
 parallax_background_offset = 0
+
+#  Player Related Variable
 player_group = None
+
+# Music Related Variables
 music, ambience = None, None
 music_channel, ambience_channel = pygame.mixer.Channel(0), pygame.mixer.Channel(1)
 
+# Cutscene Related Variables
+fade_in_out = pygame.surface.Surface(size).convert_alpha()
+fade_in_out.fill('Black')
+point = None
+cutscene = True
 
-# setup function
+
+# setting up level
 def setup():
     global current_level, spawnpoint, platform_group, decor_back_group, background, interactive_group, \
-        hint_group, hint_alpha, player_group, decor_front_group, music, ambience
+        hint_group, hint_alpha, player_group, decor_front_group, music, ambience, point
 
     # level setup
     current_level = open('save_data').read()[-1]
@@ -41,6 +52,7 @@ def setup():
     background = level_data.background_group
     interactive_group, hint_group = level_data.interactive_group, level_data.hint_group
     hint_alpha = 0
+    point = spawnpoint[0]
 
     # player setup
     player_group = pygame.sprite.GroupSingle()
@@ -48,16 +60,42 @@ def setup():
 
     # music setup
     music = pygame.mixer.Sound(f'Resources/Sounds/Levels/Music/Music ({current_level}).wav')
-    music.set_volume(0.1)
     ambience = pygame.mixer.Sound(f'Resources/Sounds/Levels/Ambience/Ambience ({current_level}).wav')
 
 
-# exit functions
+# Settings Variable
+settings = {}
+
+
+# loading the settings from config
+def load_settings():
+    global screen, music_channel, ambience_channel, player_group, settings
+
+    # get settings
+    settings = {i.split(' = ')[0]: eval(i.split(' = ')[1]) for i in open('config').readlines()}
+
+    # changing the screen settings
+    if settings['fullscreen']:
+        flags = pygame.FULLSCREEN | pygame.NOFRAME | pygame.SCALED
+    else:
+        flags = 0
+    screen = pygame.display.set_mode(settings['screen_size'], flags, vsync=1)
+    if not settings['fullscreen']:
+        screen = pygame.display.set_mode(settings['screen_size'], flags, vsync=1)
+
+    # changing the sound settings
+    for channel in (music_channel, ambience_channel):
+        channel.set_volume(settings['music_volume'])
+    list(player_group)[0].SFX.set_volume(settings['sfx_volume'])
+
+
+# Exit Functions
 def close_game():
     pygame.quit()
     sys.exit()
 
 
+# I refuse to elaborate on the matter of this monstrosity
 def camera_update(player_c):
     global parallax_background_offset
 
@@ -88,55 +126,120 @@ def camera_update(player_c):
         player_c.rect.y -= offset[1]
 
 
+# drawing the parallax background
 def draw_background():
     global parallax_background_offset
-    for x in range(4):
+    for x in range(-2, 3):
         speed = 1
+        if x < 0:
+            x_coefficient = -1
+        else:
+            x_coefficient = 1
         for i in background:
-            display.blit(i, (x * size[0] - parallax_background_offset * speed, 0))
+            pos = int(abs(x) * size[0] - parallax_background_offset * speed) * x_coefficient
+            display.blit(i, (pos, 0))
             speed += 0.4
 
 
 # code to run the game
-
 if __name__ == '__main__':
     setup()
+    load_settings()
+    fade_in_alpha = 255
+    pause = False
     while True:
+
         # event loop
         for event in pygame.event.get():
+            # close the game
             if event.type == pygame.QUIT:
                 close_game()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    pass
+                if event.key == pygame.K_r:
+                    load_settings()
+                # pause the game
+                if event.key == pygame.K_ESCAPE:
+                    pause = not pause
 
-        # player update
-        for player in player_group:
-            camera_update(player)
-            player.update()
-            if player.rect.center[0] not in range(size[0]) or player.rect.center[1] not in range(size[1]):
-                player.rect.topleft = (spawnpoint[0], spawnpoint[1] - 80)
+        if not pause:
+            if level_data.level_exit:
+                cutscene = True
+                point = size[0] + 60
 
-        # display update
-        display.fill((0, 0, 0))
-        draw_background()
-        decor_back_group.draw(display)
-        if pygame.sprite.spritecollide(player, hint_group, False):
-            hint_alpha += 5
-            if hint_alpha > 255:
-                hint_alpha = 255
+            if cutscene:
+                # play cutscene
+                if fade_in_alpha > 255:
+                    fade_in_alpha = 255
+                elif fade_in_alpha < 0:
+                    fade_in_alpha = 0
+                fade_in_out.set_alpha(fade_in_alpha)
+                if point == spawnpoint[0]:
+                    fade_in_alpha -= 1
+                else:
+                    fade_in_alpha += 4
+                player = list(player_group)[0]
+                camera_update(player)
+                if player.rect.left < point:
+                    player.rect.x += 1
+                    player.movement[0] += 1
+                    player.animate()
+                    player.sound()
+                else:
+                    if point == spawnpoint[0]:
+                        cutscene = False
+                    else:
+                        for group in [player_group, decor_front_group, decor_back_group, player_group, hint_group,
+                                      background, interactive_group, platform_group]:
+                            if group != background:
+                                group.empty()
+                            else:
+                                level_data.background_group = []
+                        setup()
+                        level_data.level_exit = False
+                        music_channel.stop()
+                        ambience_channel.stop()
+                        point = spawnpoint[0]
+
+            else:
+                # player update
+                for player in player_group:
+                    camera_update(player)
+                    player.update()
+                    if player.rect.center[0] not in range(size[0]) or player.rect.center[1] not in range(size[1]):
+                        player.rect.topleft = (spawnpoint[0], spawnpoint[1] - 80)
+
+            # display update
+            display.fill((0, 0, 0))
+            draw_background()
+            decor_back_group.draw(display)
+
+            # changing transparency of objects in hint group to hide/show them
+            if not cutscene:
+                if pygame.sprite.spritecollide(player, hint_group, False):
+                    hint_alpha += 5
+                    if hint_alpha > 255:
+                        hint_alpha = 255
+                else:
+                    hint_alpha -= 5
+                    if hint_alpha < 0:
+                        hint_alpha = 0
+            for hint in hint_group:
+                hint.image.set_alpha(hint_alpha)
+
+            hint_group.draw(display)
+            player_group.draw(display)
+            platform_group.draw(display)
+            decor_front_group.draw(display)
+
+            # Fading into the level at the start
+            if cutscene:
+                display.blit(fade_in_out, (0, 0))
+            screen.blit(pygame.transform.scale(display, settings['screen_size']), (0, 0))
+            pygame.display.update()
+
         else:
-            hint_alpha -= 5
-            if hint_alpha < 0:
-                hint_alpha = 0
-        for hint in hint_group:
-            hint.image.set_alpha(hint_alpha)
-        hint_group.draw(display)
-        player_group.draw(display)
-        platform_group.draw(display)
-        decor_front_group.draw(display)
-        screen.blit(pygame.transform.scale(display, resolution), (0, 0))
-        pygame.display.update()
+            # !PAUSE MENU CODE GOES HERE (TBA)!
+            pass
 
         # sound update
         if not music_channel.get_busy():

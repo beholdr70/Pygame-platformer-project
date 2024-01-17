@@ -5,11 +5,11 @@
     },
     "activeFile": "levels/TMX/level_1.tmx",
     "expandedProjectPaths": [
-        ".idea",
         "levels/TSX",
-        "levels",
+        ".idea",
         ".",
-        "levels/TMX"
+        "levels/TMX",
+        "levels"
     ],
     "fileStates": {
         "": {
@@ -21,15 +21,36 @@
         },
         "levels/TMX/level_1.tmx": {
             "expandedGroupLayers": [
-                20,
                 6,
+                20,
                 19
             ],
-            "scale": 0.5,
-            "selectedLayer": 5,
+            "expandedObjectLayers": [
+                18
+            ],
+            "scale": 1,
+            "selectedLayer": 11,
             "viewCenter": {
-                "x": 1189,
-                "y": 374
+                "x": 980.5,
+                "y": 197
+            }
+        },
+        "levels/TMX/level_2.tmx": {
+            "expandedGroupLayers": [
+                4
+            ],
+            "expandedObjectLayers": [
+                4,
+                9,
+                7,
+                6,
+                8
+            ],
+            "scale": 0.75,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 220.66666666666669,
+                "y": 220
             }
         },
         "levels/TSX/BackGround.tsx": {
@@ -49,7 +70,7 @@
         },
         "levels/TSX/Pixel Platformer Tileset.tsx": {
             "dynamicWrapping": false,
-            "scaleInDock": 1,
+            "scaleInDock": 0.5,
             "scaleInEditor": 1
         },
         "levels/TSX/props2.tsx": {
@@ -72,10 +93,12 @@
         "levels/TSX/Legacy Adventure Tileset.tsx",
         "levels/TSX/BackGround.tsx",
         "levels/TSX/props2.tsx",
-        "levels/TSX/Buttons.tsx"
+        "levels/TSX/Buttons.tsx",
+        "levels/TMX/level_2.tmx"
     ],
     "project": "level.tiled-project",
     "recentFiles": [
+        "levels/TMX/level_2.tmx",
         "levels/TSX/Buttons.tsx",
         "levels/TSX/props2.tsx",
         "levels/TSX/BackGround.tsx",
