@@ -47,11 +47,11 @@ class ImageButton:
 # Menu elements
 #  Background
 background = [pygame.transform.scale(pygame.image.load(
-    'levels/levels_assets/Grassy_Mountains/layers_fullcolor/sky_fc.png'), size),
+    'levels/levels_assets/Grassy_Mountains/layers_fullcolor/sky_fc.png'), size), pygame.transform.scale(
+    pygame.image.load('levels/levels_assets/Grassy_Mountains/layers_fullcolor/clouds_bg.png'),
+    size),
     pygame.transform.scale(pygame.image.load(
         'levels/levels_assets/Grassy_Mountains/layers_fullcolor/glacial_mountains.png'),
-        size), pygame.transform.scale(
-        pygame.image.load('levels/levels_assets/Grassy_Mountains/layers_fullcolor/clouds_bg.png'),
         size), pygame.transform.scale(
         pygame.image.load('levels/levels_assets/Grassy_Mountains/layers_fullcolor/clouds_mid_t_fc.png'),
         size), pygame.transform.scale(

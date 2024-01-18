@@ -5,6 +5,7 @@ import pygame
 import sys
 
 pygame.mixer.init()
+pygame.display.init()
 
 # Screen Variables
 zoom = 26
@@ -13,7 +14,7 @@ camera_rect = pygame.Rect((0, 0), size)
 display = pygame.Surface(size)
 pygame.display.set_caption('Ilios')
 pygame.display.set_icon(pygame.image.load(f'Resources/UI_graphics/Icon.png'))
-screen = pygame.display.set_mode([i - 100 for i in (pygame.display.get_desktop_sizes()[0])])
+screen = pygame.display.set_mode((0, 0))
 
 # Clock
 clock = pygame.time.Clock()
@@ -47,7 +48,7 @@ cutscene = False
 # setting up level
 def setup():
     global current_level, spawnpoint, platform_group, decor_back_group, background, interactive_group, \
-        hint_group, hint_alpha, player_group, decor_front_group, music, ambience, point
+        hint_group, hint_alpha, player_group, decor_front_group, music, ambience, point, parallax_background_offset
 
     # level setup
     current_level = open('save_data').read()[-1]
@@ -56,6 +57,7 @@ def setup():
     platform_group = level_data.level_tile_group
     decor_back_group, decor_front_group = level_data.decor_back_group, level_data.decor_front_group
     background = level_data.background_group
+    parallax_background_offset = 0
     interactive_group, hint_group = level_data.interactive_group, level_data.hint_group
     hint_alpha = 0
     point = spawnpoint[0]
@@ -77,6 +79,11 @@ settings = {}
 def load_settings():
     global screen, music_channel, ambience_channel, player_group, settings
 
+    # reinitialization of screen
+    pygame.display.quit()
+    del screen
+    pygame.display.init()
+
     # get settings
     settings = {i.split(' = ')[0]: eval(i.split(' = ')[1]) for i in open('config').readlines()}
 
@@ -90,10 +97,11 @@ def load_settings():
         screen = pygame.display.set_mode(settings['screen_size'], flags, vsync=1)
 
     # changing the sound settings
-    for channel in (music_channel, ambience_channel):
-        channel.set_volume(settings['music_volume'])
+    music_channel.set_volume(settings['music_volume'])
+    ambience_channel.set_volume(settings['sfx_volume'])
     if player_group:
         list(player_group)[0].SFX.set_volume(settings['sfx_volume'])
+
 
 load_settings()
 
@@ -145,9 +153,23 @@ def draw_background():
         else:
             x_coefficient = 1
         for i in background:
-            pos = int(abs(x) * size[0] - parallax_background_offset * speed) * x_coefficient
-            display.blit(i, (pos, 0))
-            speed += 0.4
+            if menu.menu_state:
+                if background.index(i) == 4 and ((x == 2 and pos == 0) or (x == -2 and pos == size[0])):
+                    parallax_background_offset = 0
+                pos = x * (size[0] + 0.5) - parallax_background_offset
+            else:
+                pos = int(abs(x) * size[0] - parallax_background_offset * speed) * x_coefficient
+                speed += 0.4
+            if not (menu.menu_state and background.index(i) >= 2):
+                display.blit(i, (pos, 0))
+    if menu.menu_state:
+        for x in range(-2, 3):
+            for i in background[2:]:
+                pos = x * (size[0] + 0.5) - parallax_background_offset
+                if background.index(i) != 2:
+                    display.blit(i, (pos, 0))
+                else:
+                    display.blit(i, (size[0] * x, 0))
 
 
 # code to run the game
@@ -164,13 +186,15 @@ if __name__ == '__main__':
                 if event.key == pygame.K_r:
                     load_settings()
                 # pause the game
-                if event.key == pygame.K_ESCAPE:
+                if event.key == pygame.K_ESCAPE and not menu.menu_state:
                     pause = not pause
 
             if menu.menu_state:
 
                 # activating buttons
                 if menu.play_button.handle_event(event, 'START'):
+                    music_channel.stop()
+                    ambience_channel.stop()
                     setup()
                     cutscene = True
                 menu.quit_button.handle_event(event, 'QUIT')
@@ -254,6 +278,7 @@ if __name__ == '__main__':
                 if cutscene:
                     display.blit(fade_in_out, (0, 0))
             else:
+                parallax_background_offset += 0.5
                 display.blit(menu.logo, (15, 15))
                 for button in [menu.options_button, menu.play_button, menu.quit_button]:
                     button.check_hover(pygame.mouse.get_pos())

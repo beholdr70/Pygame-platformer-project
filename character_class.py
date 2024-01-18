@@ -143,7 +143,7 @@ class PlayerChar(pygame.sprite.Sprite):
 
         #  Dash
         if keys[pygame.K_LSHIFT] and self.dash_charges and self.timers['dash'] + 200 <= self.timers['current'] and (
-                keys[pygame.K_d] or keys[pygame.K_a]) and self.upgrade > 1:
+                keys[pygame.K_d] or keys[pygame.K_a]) and self.upgrade > 2:
 
             self.dash = True
             self.timers['dash'] = pygame.time.get_ticks()
@@ -168,7 +168,7 @@ class PlayerChar(pygame.sprite.Sprite):
                 if self.on_ground:
                     self.SFX.play(self.jump_sound[randint(0, 4)], fade_ms=100)
 
-            elif not self.on_ground and self.timers['air_time'] >= self.timers['on_ground'] + 400 and self.upgrade > 0:
+            elif not self.on_ground and self.timers['air_time'] >= self.timers['on_ground'] + 400 and self.upgrade > 1:
 
                 self.double_jump_charge -= 1
                 self.gravity_speed = self.jump_force

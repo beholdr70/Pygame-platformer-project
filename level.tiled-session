@@ -7,9 +7,9 @@
     "expandedProjectPaths": [
         "levels/TSX",
         ".idea",
-        "levels",
         ".",
-        "levels/TMX"
+        "levels/TMX",
+        "levels"
     ],
     "file.lastUsedOpenFilter": "Все файлы (*)",
     "fileStates": {
@@ -41,15 +41,15 @@
                 4
             ],
             "expandedObjectLayers": [
-                8,
+                9,
                 4,
-                9
+                8
             ],
             "scale": 0.75,
-            "selectedLayer": 5,
+            "selectedLayer": 6,
             "viewCenter": {
-                "x": 341.33333333333337,
-                "y": 193.33333333333337
+                "x": 649.3333333333334,
+                "y": 581.3333333333334
             }
         },
         "levels/TSX/BackGround.tsx": {
@@ -69,17 +69,17 @@
         },
         "levels/TSX/Cave_tileset.tsx": {
             "dynamicWrapping": false,
-            "scaleInDock": 0.75,
+            "scaleInDock": 0.33,
             "scaleInEditor": 1
         },
         "levels/TSX/Legacy Adventure Tileset.tsx": {
             "dynamicWrapping": false,
-            "scaleInDock": 1,
+            "scaleInDock": 1.5,
             "scaleInEditor": 1
         },
         "levels/TSX/Pixel Platformer Tileset.tsx": {
             "dynamicWrapping": false,
-            "scaleInDock": 1,
+            "scaleInDock": 1.5,
             "scaleInEditor": 1
         },
         "levels/TSX/props2.tsx": {
