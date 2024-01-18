@@ -198,7 +198,7 @@ if __name__ == '__main__':
                     setup()
                     cutscene = True
                 menu.quit_button.handle_event(event, 'QUIT')
-                menu.options_button.handle_event(event, '')
+                menu.options_button.handle_event(event, 'OPTIONS')
 
         if not pause:
             if not menu.menu_state:

@@ -3,13 +3,13 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "levels/TMX/level_2.tmx",
+    "activeFile": "levels/TMX/level_1.tmx",
     "expandedProjectPaths": [
         "levels/TSX",
-        ".idea",
-        ".",
         "levels/TMX",
-        "levels"
+        "levels",
+        ".",
+        ".idea"
     ],
     "file.lastUsedOpenFilter": "Все файлы (*)",
     "fileStates": {
@@ -22,18 +22,18 @@
         },
         "levels/TMX/level_1.tmx": {
             "expandedGroupLayers": [
+                6,
                 20,
-                19,
-                6
+                19
             ],
             "expandedObjectLayers": [
                 18
             ],
             "scale": 1,
-            "selectedLayer": 11,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 916,
-                "y": 194
+                "x": 185,
+                "y": 521
             }
         },
         "levels/TMX/level_2.tmx": {
@@ -42,14 +42,14 @@
             ],
             "expandedObjectLayers": [
                 9,
-                4,
-                8
+                8,
+                4
             ],
             "scale": 0.75,
             "selectedLayer": 6,
             "viewCenter": {
-                "x": 649.3333333333334,
-                "y": 581.3333333333334
+                "x": 648,
+                "y": 580
             }
         },
         "levels/TSX/BackGround.tsx": {
@@ -102,16 +102,17 @@
         "levels/TSX/Buttons.tsx",
         "levels/TMX/level_2.tmx",
         "levels/TSX/Background Cave.tsx",
-        "levels/TSX/Cave_tileset.tsx"
+        "levels/TSX/Cave_tileset.tsx",
+        "levels/TMX/level_1.tmx"
     ],
     "project": "level.tiled-project",
     "recentFiles": [
         "levels/TSX/Pixel Platformer Tileset.tsx",
         "levels/TSX/Legacy Adventure Tileset.tsx",
         "levels/TSX/Buttons.tsx",
-        "levels/TSX/Cave_tileset.tsx",
-        "levels/TSX/Background Cave.tsx",
         "levels/TMX/level_2.tmx",
+        "levels/TSX/Background Cave.tsx",
+        "levels/TSX/Cave_tileset.tsx",
         "levels/TMX/level_1.tmx",
         "levels/TSX/props2.tsx",
         "levels/TSX/BackGround.tsx",

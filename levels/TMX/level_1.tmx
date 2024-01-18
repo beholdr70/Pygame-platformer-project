@@ -200,12 +200,12 @@
   </layer>
  </group>
  <objectgroup id="18" name="Interctive">
-  <object id="22" name="A button" type="Graphic" gid="11791" x="229.5" y="240.833" width="24" height="24"/>
-  <object id="23" name="D button" type="Graphic" gid="11792" x="254.5" y="240.5" width="24" height="24"/>
+  <object id="22" name="A button" type="Graphic" gid="11791" x="225.5" y="240.833" width="32" height="32"/>
+  <object id="23" name="D button" type="Graphic" gid="11792" x="254.5" y="240.5" width="32" height="32"/>
   <object id="26" name="A/D Checkbox" type="Checkbox" x="189" y="160" width="149" height="110"/>
   <object id="27" name="Space Checkbox" type="Checkbox" x="385" y="518" width="128" height="71"/>
-  <object id="28" name="Space button" type="Graphic" gid="11794" x="411.833" y="565.667" width="72" height="24"/>
-  <object id="29" name="E button" type="Graphic" gid="11793" x="1162" y="347.667" width="24" height="24"/>
+  <object id="28" name="Space button" type="Graphic" gid="11794" x="411.833" y="565.667" width="64" height="32"/>
+  <object id="29" name="E button" type="Graphic" gid="11793" x="1154.75" y="352.417" width="32" height="32"/>
   <object id="30" name="E Checkbox" type="Checkbox, Exit" x="1154.33" y="320" width="77" height="47"/>
   <object id="31" name="Spawn Point" x="144.5" y="256">
    <point/>
