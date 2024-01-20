@@ -3,6 +3,7 @@ import level_data
 import menu
 import pygame
 import sys
+from math import floor
 
 pygame.mixer.init()
 pygame.display.init()
@@ -12,7 +13,7 @@ zoom = 26
 size = (16 * zoom, 9 * zoom)
 camera_rect = pygame.Rect((0, 0), size)
 display = pygame.Surface(size)
-pygame.display.set_caption('Ilios')
+pygame.display.set_caption('Illios')
 pygame.display.set_icon(pygame.image.load(f'Resources/UI_graphics/Icon.png'))
 screen = pygame.display.set_mode((0, 0))
 
@@ -98,6 +99,8 @@ def load_settings():
     screen = pygame.display.set_mode(settings['screen_size'], flags, vsync=1)
     if not settings['fullscreen']:
         screen = pygame.display.set_mode(settings['screen_size'], flags, vsync=1)
+    pygame.display.set_icon(pygame.image.load('Resources/UI_graphics/Icon.png'))
+    pygame.display.set_caption('Illios')
 
     # changing the sound settings
     for channel in [ambience_channel, music_channel, menu.menu_sfx_channel]:
@@ -168,20 +171,17 @@ def camera_update(player_c):
 # drawing the parallax background
 def draw_background():
     global parallax_background_offset
-    for x in range(-2, 3):
+    for x in range(-3, 4):
         speed = 1
-        if x < 0:
-            x_coefficient = -1
-        else:
-            x_coefficient = 1
         for i in background:
             if menu.menu_state:
+                pos = x * (size[0] + 0.5) - parallax_background_offset
                 if background.index(i) == 4 and ((x == 2 and pos == 0) or (x == -2 and pos == size[0])):
                     parallax_background_offset = 0
-                pos = x * (size[0] + 0.5) - parallax_background_offset
+                    pos = x * (size[0] + 0.5) - parallax_background_offset
             else:
-                pos = int(abs(x) * size[0] - parallax_background_offset * speed) * x_coefficient
-                speed += 0.4
+                pos = floor(x * size[0] - parallax_background_offset * speed)
+                speed += 0.5
             if not (menu.menu_state and background.index(i) >= 2):
                 display.blit(i, (pos, 0))
     if menu.menu_state:
@@ -220,7 +220,7 @@ if __name__ == '__main__':
                 settings['sfx_volume'] = menu.sfx_slider.handle_event(event, mouse_pos, settings['screen_size'])
                 settings['music_volume'] = menu.music_slider.handle_event(event, mouse_pos, settings['screen_size'])
                 if menu.apply_button.handle_event(event, 'APPLY'):
-                    settings['sfx_volume'] = 1 if settings['sfx_volume'] > 0.95 else settings['sfx_volume']
+                    settings['sfx_volume'] = 0 if settings['sfx_volume'] < 0.05 else settings['sfx_volume']
                     settings['music_volume'] = 0 if settings['music_volume'] < 0.05 else settings['music_volume']
                     settings['screen_size'] = eval(menu.resolution_button.text)
                     save_settings(settings)

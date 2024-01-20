@@ -190,18 +190,26 @@ resume_button_pause = ImageButton(26 * 8, 13 * 9 - 40, 'Resume', sound_path='Res
 pause_buttons_group = [options_button_pause, quit_button_pause, resume_button_pause]
 
 # Options Elements
-resolution_button = ImageButton(26 * 8 + 25, 13 * 9 - 50, '[1920, 1080]',
+resolution_button = ImageButton(26 * 8 + 25, 13 * 9 - 55, '[1920, 1080]',
                                 sound_path='Resources/Sounds/Menu/Ui/Click.wav')
-fullscreen_checkbox_button = ImageButton(26 * 8 + 25, 13 * 9 - 25, 'Off',
+fullscreen_checkbox_button = ImageButton(26 * 8 + 25, 13 * 9 - 30, 'Off',
                                          sound_path='Resources/Sounds/Menu/Ui/Click.wav')
 music_slider = Slider(26 * 8 + 25, 13 * 9 - 5, sound_path='Resources/Sounds/Menu/Ui/Click.wav')
 sfx_slider = Slider(26 * 8 + 25, 13 * 9 + 20, sound_path='Resources/Sounds/Menu/Ui/Click.wav')
 apply_button = ImageButton(26 * 8 - 50, 13 * 9 + 40, 'Apply', sound_path='Resources/Sounds/Menu/Ui/Click.wav')
 back_button = ImageButton(26 * 8 + 50, 13 * 9 + 40, 'Back', sound_path='Resources/Sounds/Menu/Ui/Click.wav')
+
+fullscreen_img = pygame.image.load('Resources/UI_graphics/Fullscreen.png')
 music_img = pygame.image.load('Resources/UI_graphics/Music.png')
+resolution_img = pygame.image.load('Resources/UI_graphics/Screen_res.png')
 sfx_img = pygame.image.load('Resources/UI_graphics/SFX.png')
+
 option_buttons_group = [resolution_button, fullscreen_checkbox_button, music_slider, sfx_slider, apply_button,
                         back_button, (music_img, (26 * 8 - music_img.get_width() // 2 - 50,
                                                   music_slider.path_rect.y - music_img.get_height() // 2 + 1)),
                         (sfx_img, (26 * 8 - sfx_img.get_width() // 2 - 50,
-                                   sfx_slider.path_rect.y - sfx_img.get_height() // 2 + 1))]
+                                   sfx_slider.path_rect.y - sfx_img.get_height() // 2 + 1)),
+                        (fullscreen_img, (26 * 8 - fullscreen_img.get_width() // 2 - 50,
+                                          fullscreen_checkbox_button.rect.top)),
+                        (resolution_img, (26 * 8 - resolution_img.get_width() // 2 - 50,
+                                          resolution_button.rect.top))]

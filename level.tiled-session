@@ -22,34 +22,31 @@
         },
         "levels/TMX/level_1.tmx": {
             "expandedGroupLayers": [
-                6,
+                19,
                 20,
-                19
+                6
             ],
             "expandedObjectLayers": [
                 18
             ],
-            "scale": 1,
-            "selectedLayer": 3,
+            "scale": 1.5,
+            "selectedLayer": 11,
             "viewCenter": {
-                "x": 185,
-                "y": 521
+                "x": 263.33333333333326,
+                "y": 214.66666666666669
             }
         },
         "levels/TMX/level_2.tmx": {
-            "expandedGroupLayers": [
-                4
-            ],
             "expandedObjectLayers": [
-                9,
+                4,
                 8,
-                4
+                9
             ],
-            "scale": 0.75,
-            "selectedLayer": 6,
+            "scale": 2,
+            "selectedLayer": 10,
             "viewCenter": {
-                "x": 648,
-                "y": 580
+                "x": 850.5,
+                "y": 637
             }
         },
         "levels/TSX/BackGround.tsx": {
