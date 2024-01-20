@@ -3,13 +3,13 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "levels/TMX/level_1.tmx",
+    "activeFile": "levels/TMX/level_2.tmx",
     "expandedProjectPaths": [
-        "levels/TSX",
-        "levels/TMX",
-        "levels",
         ".",
-        ".idea"
+        "levels/TSX",
+        "levels",
+        ".idea",
+        "levels/TMX"
     ],
     "file.lastUsedOpenFilter": "Все файлы (*)",
     "fileStates": {
@@ -37,16 +37,19 @@
             }
         },
         "levels/TMX/level_2.tmx": {
+            "expandedGroupLayers": [
+                20
+            ],
             "expandedObjectLayers": [
                 4,
                 8,
                 9
             ],
-            "scale": 2,
-            "selectedLayer": 10,
+            "scale": 0.75,
+            "selectedLayer": 6,
             "viewCenter": {
-                "x": 850.5,
-                "y": 637
+                "x": 525.3333333333334,
+                "y": 64
             }
         },
         "levels/TSX/BackGround.tsx": {
@@ -66,7 +69,7 @@
         },
         "levels/TSX/Cave_tileset.tsx": {
             "dynamicWrapping": false,
-            "scaleInDock": 0.33,
+            "scaleInDock": 1.5,
             "scaleInEditor": 1
         },
         "levels/TSX/Legacy Adventure Tileset.tsx": {
@@ -107,10 +110,10 @@
         "levels/TSX/Pixel Platformer Tileset.tsx",
         "levels/TSX/Legacy Adventure Tileset.tsx",
         "levels/TSX/Buttons.tsx",
-        "levels/TMX/level_2.tmx",
-        "levels/TSX/Background Cave.tsx",
-        "levels/TSX/Cave_tileset.tsx",
         "levels/TMX/level_1.tmx",
+        "levels/TSX/Cave_tileset.tsx",
+        "levels/TSX/Background Cave.tsx",
+        "levels/TMX/level_2.tmx",
         "levels/TSX/props2.tsx",
         "levels/TSX/BackGround.tsx",
         "levels/Junge Tileset.tsx"

@@ -171,17 +171,18 @@ def camera_update(player_c):
 # drawing the parallax background
 def draw_background():
     global parallax_background_offset
-    for x in range(-3, 4):
-        speed = 1
-        for i in background:
+    speed = 0
+    for i in background:
+        speed += 0.5
+        for x in range(5):
+            mult = speed + 1
             if menu.menu_state:
                 pos = x * (size[0] + 0.5) - parallax_background_offset
-                if background.index(i) == 4 and ((x == 2 and pos == 0) or (x == -2 and pos == size[0])):
+                if background.index(i) == 4 and (x == 2 and pos == 0):
                     parallax_background_offset = 0
                     pos = x * (size[0] + 0.5) - parallax_background_offset
             else:
-                pos = floor(x * size[0] - parallax_background_offset * speed)
-                speed += 0.5
+                pos = floor(x * size[0] - parallax_background_offset * mult - size[0] * 2)
             if not (menu.menu_state and background.index(i) >= 2):
                 display.blit(i, (pos, 0))
     if menu.menu_state:
