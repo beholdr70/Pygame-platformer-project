@@ -129,14 +129,12 @@ class PlayerChar(pygame.sprite.Sprite):
 
         #  Walk left
         if keys[pygame.K_a] and not self.dash:
-
             self.rect.x -= self.speed
             self.acceleration -= 0.25 * self.speed
             self.movement[0] -= self.speed
 
         #  Walk right
         if keys[pygame.K_d] and not self.dash:
-
             self.rect.x += self.speed
             self.acceleration += 0.25 * self.speed
             self.movement[0] += self.speed
@@ -186,14 +184,10 @@ class PlayerChar(pygame.sprite.Sprite):
 
     # preventing collisions with floor and walls
     def prevent_collisions(self, axis):
-        rect_cop = self.rect.copy()
-
-        # setting collision box relatable to the actual player size
-        self.rect = pygame.Rect(0, 0, 15, 20)
-        self.rect.midbottom = rect_cop.midbottom
 
         # checking for the collisions
         collisions = pygame.sprite.spritecollide(self, level_data.level_tile_group, False)
+        collisions = list(filter(lambda x: x.is_active, list(collisions)))
 
         for collision_tile in collisions:
 
@@ -223,13 +217,34 @@ class PlayerChar(pygame.sprite.Sprite):
                     self.rect.top = collision_tile.rect.bottom
                     self.gravity_speed = 0
 
-        # restore initial collision box
-        rect_cop = self.rect.copy()
-        self.rect = self.image.get_rect()
-        self.rect.midbottom = rect_cop.midbottom
-
         # update ground related variables
         self.ground_check()
+
+    def interactions_check(self):
+
+        # search for interactive object nearby
+        if pygame.sprite.spritecollideany(self, level_data.interactive_group):
+            act_checkboxes = list(pygame.sprite.spritecollide(self, level_data.interactive_group, dokill=False))
+            self.interactable = list(filter(lambda x: x.activation_type == 'Interaction', act_checkboxes))
+            passive_interaction = list(filter(lambda x: x.activation_type == 'Passive', act_checkboxes))
+            if passive_interaction:
+                for checkbox in passive_interaction:
+                    checkbox.interact(self)
+        else:
+            self.interactable = []
+
+    def accurate_rect(self, is_turned_on):
+        if is_turned_on:
+            rect_cop = self.rect.copy()
+
+            # setting collision box relatable to the actual player size
+            self.rect = pygame.Rect(0, 0, 15, 25)
+            self.rect.midbottom = rect_cop.midbottom
+        else:
+            # restore initial collision box
+            rect_cop = self.rect.copy()
+            self.rect = self.image.get_rect()
+            self.rect.midbottom = rect_cop.midbottom
 
     # playing animations of the player
     def animate(self):
@@ -268,6 +283,7 @@ class PlayerChar(pygame.sprite.Sprite):
             self.SFX.stop()
 
     def update(self):
+        self.accurate_rect(True)
 
         # movement reset
         self.movement = [0, 0]
@@ -275,16 +291,12 @@ class PlayerChar(pygame.sprite.Sprite):
         # current time update
         self.timers['current'] = pygame.time.get_ticks()
 
+        self.interactions_check()
+
         # status update
         self.on_ground = False
         if self.timers['current'] >= self.timers['dash'] + 200:
             self.dash = False
-
-        # search for interactive object nearby
-        if pygame.sprite.spritecollideany(self, level_data.interactive_group):
-            self.interactable = pygame.sprite.spritecollide(self, level_data.interactive_group, dokill=False)
-        else:
-            self.interactable = []
 
         # position update
         self.gravity()
@@ -296,3 +308,5 @@ class PlayerChar(pygame.sprite.Sprite):
 
         # SFX update
         self.sound()
+
+        self.accurate_rect(False)

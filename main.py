@@ -34,7 +34,7 @@ interactive_group, hint_group, hint_alpha = None, None, None
 parallax_background_offset = 0
 
 #  Player Related Variable
-player_group = None
+player_group = pygame.sprite.GroupSingle()
 
 # Music Related Variables
 music, ambience = pygame.mixer.Sound('Resources/Sounds/Menu/Music/Music.wav'), pygame.mixer.Sound(
@@ -108,6 +108,7 @@ def load_settings():
     music_channel.set_volume(settings['music_volume'])
     ambience_channel.set_volume(settings['sfx_volume'])
     menu.menu_sfx_channel.set_volume(settings['sfx_volume'])
+    level_data.level_sfx_channel.set_volume(settings['sfx_volume'])
     if player_group:
         list(player_group)[0].SFX.set_volume(settings['sfx_volume'])
 
@@ -117,9 +118,6 @@ def load_settings():
     if settings['fullscreen']:
         menu.fullscreen_checkbox_button.text_change('On')
     menu.resolution_button.text_change(f'{settings["screen_size"]}')
-
-
-load_settings()
 
 
 def save_settings(settings_dict):
@@ -198,6 +196,7 @@ def draw_background():
 # code to run the game
 if __name__ == '__main__':
     pause = False
+    load_settings()
     while True:
         mouse_pos = pygame.mouse.get_pos()
 
@@ -207,8 +206,6 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 close_game()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_r:
-                    load_settings()
                 # pause the game
                 if event.key == pygame.K_ESCAPE and not menu.menu_state and not menu.options_state:
                     pause = not pause
@@ -296,7 +293,9 @@ if __name__ == '__main__':
 
                 # changing transparency of objects in hint group to hide/show them
                 if not cutscene:
-                    if pygame.sprite.spritecollide(player, hint_group, False):
+                    player.accurate_rect(True)
+                    if list(filter(lambda x: 'GRAPHIC' in x.act_type,
+                                   list(pygame.sprite.spritecollide(player, interactive_group, False)))):
                         hint_alpha += 5
                         if hint_alpha > 255:
                             hint_alpha = 255
@@ -304,8 +303,10 @@ if __name__ == '__main__':
                         hint_alpha -= 5
                         if hint_alpha < 0:
                             hint_alpha = 0
+                    player.accurate_rect(False)
                 for hint in hint_group:
-                    hint.image.set_alpha(hint_alpha)
+                    if hint.image:
+                        hint.image.set_alpha(hint_alpha)
 
         # display update
 

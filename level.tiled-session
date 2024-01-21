@@ -3,13 +3,13 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "levels/TMX/level_2.tmx",
+    "activeFile": "levels/TMX/level_1.tmx",
     "expandedProjectPaths": [
-        ".",
-        "levels/TSX",
         "levels",
+        ".",
+        "levels/TMX",
         ".idea",
-        "levels/TMX"
+        "levels/TSX"
     ],
     "file.lastUsedOpenFilter": "Все файлы (*)",
     "fileStates": {
@@ -22,34 +22,53 @@
         },
         "levels/TMX/level_1.tmx": {
             "expandedGroupLayers": [
-                19,
                 20,
+                19,
                 6
             ],
             "expandedObjectLayers": [
-                18
+                9,
+                6
             ],
-            "scale": 1.5,
+            "scale": 1,
             "selectedLayer": 11,
             "viewCenter": {
-                "x": 263.33333333333326,
-                "y": 214.66666666666669
+                "x": 1004,
+                "y": 323
             }
         },
         "levels/TMX/level_2.tmx": {
             "expandedGroupLayers": [
-                20
+                20,
+                4
             ],
             "expandedObjectLayers": [
-                4,
+                9,
                 8,
-                9
+                4
             ],
             "scale": 0.75,
-            "selectedLayer": 6,
+            "selectedLayer": 17,
             "viewCenter": {
-                "x": 525.3333333333334,
-                "y": 64
+                "x": 528,
+                "y": 447.33333333333326
+            }
+        },
+        "levels/TMX/level_3.tmx": {
+            "expandedGroupLayers": [
+                3
+            ],
+            "expandedObjectLayers": [
+                5,
+                4,
+                2,
+                6
+            ],
+            "scale": 1,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 413,
+                "y": 379
             }
         },
         "levels/TSX/BackGround.tsx": {
@@ -69,7 +88,7 @@
         },
         "levels/TSX/Cave_tileset.tsx": {
             "dynamicWrapping": false,
-            "scaleInDock": 1.5,
+            "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "levels/TSX/Legacy Adventure Tileset.tsx": {
@@ -97,23 +116,20 @@
     "map.tileWidth": 16,
     "map.width": 64,
     "openFiles": [
-        "levels/TSX/Pixel Platformer Tileset.tsx",
-        "levels/TSX/Legacy Adventure Tileset.tsx",
-        "levels/TSX/Buttons.tsx",
         "levels/TMX/level_2.tmx",
-        "levels/TSX/Background Cave.tsx",
-        "levels/TSX/Cave_tileset.tsx",
-        "levels/TMX/level_1.tmx"
+        "levels/TMX/level_1.tmx",
+        "levels/TMX/level_3.tmx"
     ],
     "project": "level.tiled-project",
     "recentFiles": [
-        "levels/TSX/Pixel Platformer Tileset.tsx",
-        "levels/TSX/Legacy Adventure Tileset.tsx",
-        "levels/TSX/Buttons.tsx",
+        "levels/TMX/level_2.tmx",
+        "levels/TMX/level_3.tmx",
         "levels/TMX/level_1.tmx",
+        "levels/TSX/Buttons.tsx",
+        "levels/TSX/Legacy Adventure Tileset.tsx",
+        "levels/TSX/Pixel Platformer Tileset.tsx",
         "levels/TSX/Cave_tileset.tsx",
         "levels/TSX/Background Cave.tsx",
-        "levels/TMX/level_2.tmx",
         "levels/TSX/props2.tsx",
         "levels/TSX/BackGround.tsx",
         "levels/Junge Tileset.tsx"

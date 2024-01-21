@@ -2,6 +2,8 @@ import pygame
 from pytmx.util_pygame import load_pygame
 import main
 
+pygame.mixer.init()
+
 # Sprite Groups
 level_tile_group, interactive_group = pygame.sprite.Group(), pygame.sprite.Group()
 decor_back_group, decor_front_group = pygame.sprite.Group(), pygame.sprite.Group()
@@ -11,6 +13,76 @@ hint_group = pygame.sprite.Group()
 # Variables
 spawnpoint = None
 level_exit = False
+level_sfx_channel = pygame.mixer.Channel(4)
+
+
+class LevelTile(pygame.sprite.Sprite):
+
+    def __init__(self, position, surface, button_id=None, state=False):
+        # initialization
+        super().__init__()
+        self.image = surface
+        self.mask = pygame.mask.from_surface(self.image)
+        self.rect = self.image.get_rect(topleft=position)
+        self.id = None
+        self.id = button_id
+        if button_id:
+            self.is_active = False
+            self.image.set_alpha(0)
+            if state:
+                self.change_state()
+
+        else:
+            self.is_active = True
+
+    def change_state(self):
+        self.is_active = not self.is_active
+        if self.is_active:
+            self.image.set_alpha(255)
+        else:
+            self.image.set_alpha(0)
+
+
+class InteractiveObj(pygame.sprite.Sprite):
+
+    def __init__(self, position, surface, action_type=None, button_id=None):
+        super().__init__()
+        self.rect = surface.get_rect(topleft=position)
+        self.image = None
+        self.act_type = action_type if action_type else ''
+        if 'WINDZONE' in self.act_type:
+            self.activation_type = 'Passive'
+        else:
+            self.activation_type = 'Interaction'
+        if button_id:
+            self.button_id = button_id
+
+    def interact(self, player=None):
+        if 'EXIT' in self.act_type:
+            self.exit_level()
+        if 'PLATFORM_SWITCH' in self.act_type:
+            level_sfx_channel.play(pygame.mixer.Sound('Resources/Sounds/SFX/Platform Switch.wav'))
+            platforms = list(filter(lambda x: x.id == self.button_id, list(level_tile_group)))
+            for platform in platforms:
+                platform.change_state()
+        if 'WINDZONE' in self.act_type:
+            if player:
+                if 'R' in self.act_type:
+                    player.rect.x += 3
+                elif 'L' in self.act_type:
+                    player.rect.x -= 3
+                player.prevent_collisions('x')
+
+    def exit_level(self):
+        global level_exit
+        level = int(open('save_data').read()[-1]) + 1
+        line = open('save_data').read()[:-1]
+        save_file = open('save_data', 'w+')
+        if level > 3:
+            level = 3
+        save_file.write(f'{line[:-1]} {level}')
+        save_file.close()
+        level_exit = True
 
 
 def load(level_name):
@@ -26,61 +98,42 @@ def load(level_name):
 
     # get tiles
     for layer in tile_data.visible_layers:
+        button_id = None
         if 'Platforms' in layer.name:
             group = level_tile_group
+            if 'Button' in layer.name:
+                button_id = str(layer.name).split(', ')[-1]
         elif 'Back' in layer.name:
             group = decor_back_group
         elif 'Front' in layer.name:
             group = decor_front_group
         if hasattr(layer, 'data'):
             for x, y, surface in layer.tiles():
-                group.add(LevelTile(((x - 1) * 16, y * 16), surface.convert_alpha()))
+                group.add(LevelTile(((x - 1) * 16, y * 16), surface.convert_alpha(), button_id=button_id))
 
     # get objects
     for obj in tile_data.objects:
+        button_id = None
+        act_type = None
         if obj.type == 'Background':
             background_group.append(pygame.transform.scale(obj.image.convert_alpha(), main.size))
         if 'Checkbox' in str(obj.type):
             if 'Exit' in str(obj.type):
-                o_type = 'Exit'
-            else:
-                o_type = None
+                act_type = 'EXIT'
+            elif 'Plat_switch' in str(obj.type):
+                act_type = 'PLATFORM_SWITCH'
+                button_id = obj.name[-1]
+            elif 'Windzone' in str(obj.type):
+                act_type = str(obj.type).split(', ')[1].upper()
+            if 'Graphic' in str(obj.type):
+                if act_type:
+                    act_type += ' GRAPHIC'
+                else:
+                    act_type = 'GRAPHIC'
             interactive_group.add(
-                InteractiveObj((obj.x - 16, obj.y), pygame.Surface((int(obj.width), int(obj.height))), o_type))
-        if obj.type == 'Graphic':
-            hint_group.add(LevelTile((obj.x - 16, obj.y),
-                                     pygame.transform.scale(obj.image.convert_alpha(), (obj.width, obj.height))))
-
-
-class LevelTile(pygame.sprite.Sprite):
-
-    def __init__(self, position, surface):
-        # initialization
-        super().__init__()
-        self.image = surface
-        self.mask = pygame.mask.from_surface(self.image)
-        self.rect = self.image.get_rect(topleft=position)
-
-
-class InteractiveObj(pygame.sprite.Sprite):
-
-    def __init__(self, position, surface, type=None):
-        super().__init__()
-        self.image = None
-        self.rect = surface.get_rect(topleft=position)
-        self.type = type
-
-    def interact(self):
-        if self.type == 'Exit':
-            self.exit_level()
-
-    def exit_level(self):
-        global level_exit
-        level = int(open('save_data').read()[-1]) + 1
-        line = open('save_data').read()[:-1]
-        save_file = open('save_data', 'w+')
-        if level > 2:
-            level = 2
-        save_file.write(f'{line[:-1]} {level}')
-        save_file.close()
-        level_exit = True
+                InteractiveObj((obj.x - 16, obj.y), pygame.Surface((int(obj.width), int(obj.height))), act_type,
+                               button_id=button_id))
+        if 'Graphic' in str(obj.type):
+            if obj.image:
+                hint_group.add(LevelTile((obj.x - 16, obj.y),
+                                         pygame.transform.scale(obj.image.convert_alpha(), (obj.width, obj.height))))
