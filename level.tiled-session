@@ -3,13 +3,13 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "levels/TMX/level_1.tmx",
+    "activeFile": "levels/TMX/level_2.tmx",
     "expandedProjectPaths": [
         "levels",
-        ".",
         "levels/TMX",
         ".idea",
-        "levels/TSX"
+        "levels/TSX",
+        "."
     ],
     "file.lastUsedOpenFilter": "Все файлы (*)",
     "fileStates": {
@@ -28,13 +28,14 @@
             ],
             "expandedObjectLayers": [
                 9,
+                18,
                 6
             ],
             "scale": 1,
             "selectedLayer": 11,
             "viewCenter": {
-                "x": 1004,
-                "y": 323
+                "x": 42,
+                "y": 7
             }
         },
         "levels/TMX/level_2.tmx": {
@@ -48,10 +49,10 @@
                 4
             ],
             "scale": 0.75,
-            "selectedLayer": 17,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 528,
-                "y": 447.33333333333326
+                "x": 522.6666666666665,
+                "y": 442.6666666666666
             }
         },
         "levels/TMX/level_3.tmx": {
@@ -122,9 +123,9 @@
     ],
     "project": "level.tiled-project",
     "recentFiles": [
-        "levels/TMX/level_2.tmx",
         "levels/TMX/level_3.tmx",
         "levels/TMX/level_1.tmx",
+        "levels/TMX/level_2.tmx",
         "levels/TSX/Buttons.tsx",
         "levels/TSX/Legacy Adventure Tileset.tsx",
         "levels/TSX/Pixel Platformer Tileset.tsx",
