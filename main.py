@@ -157,8 +157,8 @@ def camera_update(player_c):
 
     # y movement
     if (any(any(y > size[1] for y in group) for group in y_pos_lst) and
-        offset[1] > 0) or (
-            any(any(y < 0 for y in group) for group in y_pos_lst) and offset[1] < 0):
+        offset[1] > 2) or (
+            any(any(y < 0 for y in group) for group in y_pos_lst) and offset[1] < -2):
         for group in level_groups:
             for tile in group:
                 tile.rect.y -= offset[1]

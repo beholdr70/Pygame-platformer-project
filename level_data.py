@@ -73,16 +73,15 @@ class InteractiveObj(pygame.sprite.Sprite):
                     player.prevent_collisions('x')
                 elif 'L' in self.act_type:
                     player.rect.x -= 3
-                    player.movement[0] -= 3
+                    player.movement[0] = -3
                     player.prevent_collisions('x')
                 elif 'UP' in self.act_type:
-                    player.rect.y -= 10
-                    player.movement[1] -= 10
+                    if player.gravity_speed > -4:
+                        player.gravity_speed -= 3
                     player.prevent_collisions('y')
                     # player.animate()
                 elif 'DOWN' in self.act_type:
-                    player.rect.y += 5
-                    player.movement[1] += 5
+                    player.gravity_speed += 2
                     player.prevent_collisions('y')
                     # player.animate()
 

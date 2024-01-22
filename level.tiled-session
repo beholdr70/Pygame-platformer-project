@@ -3,13 +3,13 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "levels/TMX/level_2.tmx",
+    "activeFile": "levels/TMX/level_3.tmx",
     "expandedProjectPaths": [
-        "levels",
-        "levels/TMX",
-        ".idea",
         "levels/TSX",
-        "."
+        "levels/TMX",
+        "levels",
+        ".",
+        ".idea"
     ],
     "file.lastUsedOpenFilter": "Все файлы (*)",
     "fileStates": {
@@ -52,8 +52,8 @@
             "scale": 1,
             "selectedLayer": 11,
             "viewCenter": {
-                "x": 41,
-                "y": 6.5
+                "x": 99,
+                "y": 145
             }
         },
         "levels/TMX/level_2.tmx": {
@@ -66,25 +66,27 @@
                 4,
                 8
             ],
-            "scale": 0.75,
-            "selectedLayer": 4,
+            "scale": 4,
+            "selectedLayer": 15,
             "viewCenter": {
-                "x": 598.6666666666665,
-                "y": 626.6666666666665
+                "x": 757,
+                "y": 807.75
             }
         },
         "levels/TMX/level_3.tmx": {
             "expandedGroupLayers": [
-                3
+                3,
+                20
             ],
             "expandedObjectLayers": [
+                9,
                 4
             ],
-            "scale": 1,
-            "selectedLayer": 13,
+            "scale": 0.33,
+            "selectedLayer": 11,
             "viewCenter": {
-                "x": 658,
-                "y": 519
+                "x": 1000.0000000000001,
+                "y": -48.4848484848485
             }
         },
         "levels/TSX/BackGround.tsx": {
@@ -104,7 +106,7 @@
         },
         "levels/TSX/Cave_tileset.tsx": {
             "dynamicWrapping": false,
-            "scaleInDock": 1,
+            "scaleInDock": 1.5,
             "scaleInEditor": 1
         },
         "levels/TSX/Legacy Adventure Tileset.tsx": {
@@ -124,7 +126,7 @@
         }
     },
     "last.externalTilesetPath": "C:/Users/Bee/PycharmProjects/Pygame-platformer-project/levels/TSX",
-    "last.imagePath": "C:/Users/Bee/PycharmProjects/Pygame-platformer-project/levels/levels_assets/PixelFantasy_Caves_1.0",
+    "last.imagePath": "C:/Users/Bee/PycharmProjects/Pygame-platformer-project/levels/Buttons",
     "map.height": 40,
     "map.lastUsedFormat": "tmx",
     "map.renderOrder": null,
@@ -134,14 +136,15 @@
     "openFiles": [
         "levels/TMX/level_2.tmx",
         "levels/TMX/level_1.tmx",
-        "levels/TMX/level_3.tmx"
+        "levels/TMX/level_3.tmx",
+        "levels/TSX/Buttons.tsx"
     ],
     "project": "level.tiled-project",
     "recentFiles": [
-        "levels/TMX/level_3.tmx",
-        "levels/TMX/level_1.tmx",
         "levels/TMX/level_2.tmx",
+        "levels/TMX/level_1.tmx",
         "levels/TSX/Buttons.tsx",
+        "levels/TMX/level_3.tmx",
         "levels/TSX/Legacy Adventure Tileset.tsx",
         "levels/TSX/Pixel Platformer Tileset.tsx",
         "levels/TSX/Cave_tileset.tsx",

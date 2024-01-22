@@ -291,8 +291,6 @@ class PlayerChar(pygame.sprite.Sprite):
         # current time update
         self.timers['current'] = pygame.time.get_ticks()
 
-        self.interactions_check()
-
         # status update
         self.on_ground = False
         if self.timers['current'] >= self.timers['dash'] + 200:
@@ -302,6 +300,9 @@ class PlayerChar(pygame.sprite.Sprite):
         self.gravity()
         self.char_inputs()
         self.momentum()
+
+        # Interaction
+        self.interactions_check()
 
         # animation update
         self.animate()
