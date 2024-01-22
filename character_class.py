@@ -115,10 +115,9 @@ class PlayerChar(pygame.sprite.Sprite):
 
             # abilities' charges reset
             self.double_jump_charge = 1
-            if self.timers['on_ground'] >= self.timers['air_time'] + 500 and not self.dash:
+            if self.timers['on_ground'] >= self.timers['air_time'] + 1000 and not self.dash:
                 self.dash_charges = 2
         else:
-
             self.timers['air_time'] = pygame.time.get_ticks()
 
     # checking for inputs
@@ -141,7 +140,7 @@ class PlayerChar(pygame.sprite.Sprite):
 
         #  Dash
         if keys[pygame.K_LSHIFT] and self.dash_charges and self.timers['dash'] + 200 <= self.timers['current'] and (
-                keys[pygame.K_d] or keys[pygame.K_a]) and self.upgrade > 2:
+                keys[pygame.K_d] or keys[pygame.K_a]) and self.upgrade > 1:
 
             self.dash = True
             self.timers['dash'] = pygame.time.get_ticks()
@@ -166,7 +165,7 @@ class PlayerChar(pygame.sprite.Sprite):
                 if self.on_ground:
                     self.SFX.play(self.jump_sound[randint(0, 4)], fade_ms=100)
 
-            elif not self.on_ground and self.timers['air_time'] >= self.timers['on_ground'] + 400 and self.upgrade > 1:
+            elif not self.on_ground and self.timers['air_time'] >= self.timers['on_ground'] + 400 and self.upgrade > 2:
 
                 self.double_jump_charge -= 1
                 self.gravity_speed = self.jump_force
@@ -311,3 +310,67 @@ class PlayerChar(pygame.sprite.Sprite):
         self.sound()
 
         self.accurate_rect(False)
+
+
+class CharacterFX(pygame.sprite.Sprite):
+
+    def __init__(self, fx_type):
+        super().__init__()
+        if fx_type == 'DASH_UI':
+            self.fx_type = fx_type
+            self.images = [pygame.image.load('Resources/UI_graphics/dash_full.png'),
+                           pygame.image.load('Resources/UI_graphics/dash_half.png'),
+                           pygame.image.load('Resources/UI_graphics/dash_empty.png')]
+            self.image = pygame.Surface.copy(self.images[0])
+            self.rect = self.image.get_rect()
+            self.alpha = 0
+            self.image.set_alpha(self.alpha)
+            self.bleak_surf = pygame.mask.from_surface(self.image).to_surface(setcolor='White')
+            self.bleak_surf.set_colorkey((0, 0, 0))
+            self.bleak_alpha = 0
+            self.prev_frame_dash_charges = 0
+
+    def shine(self, bright):
+        if bright == 'bleak':
+            self.bleak_alpha = 150
+        if bright == 'bright':
+            self.bleak_alpha = 200
+
+    def draw_shine(self, display):
+        if self.alpha > 0:
+            display.blit(self.bleak_surf, self.rect)
+
+    def update(self, player):
+        if self.fx_type == 'DASH_UI':
+
+            if player.dash_charges == 2 and self.prev_frame_dash_charges != player.dash_charges:
+                self.image = pygame.Surface.copy(self.images[0])
+                self.shine('bright')
+            elif player.dash_charges == 1 and self.prev_frame_dash_charges != player.dash_charges:
+                self.image = pygame.Surface.copy(self.images[1])
+                self.shine('bleak')
+            elif player.dash_charges == 0 and self.prev_frame_dash_charges != player.dash_charges:
+                self.image = pygame.Surface.copy(self.images[2])
+                self.shine('bleak')
+
+            if (player.timers['current'] <= player.timers['dash'] + 1750 and player.on_ground) or (
+                    player.timers['current'] <= player.timers['dash'] + 1000 and not player.on_ground):
+                self.alpha += 20
+                self.alpha = 255 if self.alpha > 255 else self.alpha
+            else:
+                self.alpha -= 10
+                self.alpha = 0 if self.alpha < 0 else self.alpha
+            self.bleak_alpha -= 30
+
+            player.accurate_rect(True)
+            if player.movement[0] < 0:
+                self.rect.left = player.rect.right + 10
+            else:
+                self.rect.right = player.rect.left - 10
+            self.rect.top = player.rect.top - self.rect.height // 2 - 5
+            player.accurate_rect(False)
+
+            self.image.set_alpha(self.alpha)
+            self.bleak_surf.set_alpha(self.bleak_alpha)
+
+            self.prev_frame_dash_charges = player.dash_charges

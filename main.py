@@ -35,6 +35,7 @@ parallax_background_offset = 0
 
 #  Player Related Variable
 player_group = pygame.sprite.GroupSingle()
+playerFX_group = pygame.sprite.Group()
 
 # Music Related Variables
 music, ambience = pygame.mixer.Sound('Resources/Sounds/Menu/Music/Music.wav'), pygame.mixer.Sound(
@@ -68,7 +69,8 @@ def setup():
 
     # player setup
     player_group = pygame.sprite.GroupSingle()
-    player_group.add(character_class.PlayerChar(spawnpoint, upgrade=int(current_level) + 1))
+    player_group.add(character_class.PlayerChar(spawnpoint, upgrade=int(current_level) - 1))
+    playerFX_group.add(character_class.CharacterFX('DASH_UI'))
 
     # music setup
     music = pygame.mixer.Sound(f'Resources/Sounds/Levels/Music/Music ({current_level}).wav')
@@ -290,6 +292,8 @@ if __name__ == '__main__':
                         player.update()
                         if player.rect.center[0] not in range(size[0]) or player.rect.center[1] not in range(size[1]):
                             player.rect.topleft = (spawnpoint[0], spawnpoint[1] - 80)
+                    for fx in playerFX_group:
+                        fx.update(player)
 
                 # changing transparency of objects in hint group to hide/show them
                 if not cutscene:
@@ -320,6 +324,10 @@ if __name__ == '__main__':
             player_group.draw(display)
             platform_group.draw(display)
             decor_front_group.draw(display)
+            if not cutscene:
+                playerFX_group.draw(display)
+            for fx in list(filter(lambda x: x.fx_type == 'DASH_UI', list(playerFX_group))):
+                fx.draw_shine(display)
 
             # Fading into the level at the start
             if cutscene:
