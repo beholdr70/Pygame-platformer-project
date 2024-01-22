@@ -68,7 +68,7 @@ def setup():
 
     # player setup
     player_group = pygame.sprite.GroupSingle()
-    player_group.add(character_class.PlayerChar(spawnpoint, upgrade=int(current_level) - 1))
+    player_group.add(character_class.PlayerChar(spawnpoint, upgrade=int(current_level) + 1))
 
     # music setup
     music = pygame.mixer.Sound(f'Resources/Sounds/Levels/Music/Music ({current_level}).wav')
@@ -157,7 +157,7 @@ def camera_update(player_c):
 
     # y movement
     if (any(any(y > size[1] for y in group) for group in y_pos_lst) and
-        offset[1] > 4) or (
+        offset[1] > 0) or (
             any(any(y < 0 for y in group) for group in y_pos_lst) and offset[1] < 0):
         for group in level_groups:
             for tile in group:

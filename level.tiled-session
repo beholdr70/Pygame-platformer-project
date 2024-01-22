@@ -16,6 +16,24 @@
         "": {
             "scaleInDock": 1
         },
+        "E:/Pygame-platformer-project/levels/TSX/BackGround.tsx": {
+            "scaleInDock": 1
+        },
+        "E:/Pygame-platformer-project/levels/TSX/Background Cave.tsx": {
+            "scaleInDock": 1
+        },
+        "E:/Pygame-platformer-project/levels/TSX/Buttons.tsx": {
+            "scaleInDock": 1
+        },
+        "E:/Pygame-platformer-project/levels/TSX/Cave_tileset.tsx": {
+            "scaleInDock": 1
+        },
+        "E:/Pygame-platformer-project/levels/TSX/Legacy Adventure Tileset.tsx": {
+            "scaleInDock": 1
+        },
+        "E:/Pygame-platformer-project/levels/TSX/Pixel Platformer Tileset.tsx": {
+            "scaleInDock": 1
+        },
         "levels/Junge Tileset.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
@@ -23,36 +41,36 @@
         "levels/TMX/level_1.tmx": {
             "expandedGroupLayers": [
                 20,
-                19,
-                6
+                6,
+                19
             ],
             "expandedObjectLayers": [
-                9,
                 18,
+                9,
                 6
             ],
             "scale": 1,
             "selectedLayer": 11,
             "viewCenter": {
-                "x": 42,
-                "y": 7
+                "x": 41,
+                "y": 6.5
             }
         },
         "levels/TMX/level_2.tmx": {
             "expandedGroupLayers": [
-                20,
-                4
+                4,
+                20
             ],
             "expandedObjectLayers": [
                 9,
-                8,
-                4
+                4,
+                8
             ],
             "scale": 0.75,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 522.6666666666665,
-                "y": 442.6666666666666
+                "x": 598.6666666666665,
+                "y": 626.6666666666665
             }
         },
         "levels/TMX/level_3.tmx": {
@@ -60,16 +78,13 @@
                 3
             ],
             "expandedObjectLayers": [
-                5,
-                4,
-                2,
-                6
+                4
             ],
             "scale": 1,
-            "selectedLayer": 4,
+            "selectedLayer": 13,
             "viewCenter": {
-                "x": 413,
-                "y": 379
+                "x": 658,
+                "y": 519
             }
         },
         "levels/TSX/BackGround.tsx": {
@@ -108,7 +123,7 @@
             "scaleInEditor": 1
         }
     },
-    "last.externalTilesetPath": "C:/Users/Bee/PycharmProjects/Pygame-platformer-project/levels",
+    "last.externalTilesetPath": "C:/Users/Bee/PycharmProjects/Pygame-platformer-project/levels/TSX",
     "last.imagePath": "C:/Users/Bee/PycharmProjects/Pygame-platformer-project/levels/levels_assets/PixelFantasy_Caves_1.0",
     "map.height": 40,
     "map.lastUsedFormat": "tmx",

@@ -66,12 +66,25 @@ class InteractiveObj(pygame.sprite.Sprite):
             for platform in platforms:
                 platform.change_state()
         if 'WINDZONE' in self.act_type:
-            if player:
+            if player and not player.dash:
                 if 'R' in self.act_type:
                     player.rect.x += 3
+                    player.movement[0] += 3
+                    player.prevent_collisions('x')
                 elif 'L' in self.act_type:
                     player.rect.x -= 3
-                player.prevent_collisions('x')
+                    player.movement[0] -= 3
+                    player.prevent_collisions('x')
+                elif 'UP' in self.act_type:
+                    player.rect.y -= 10
+                    player.movement[1] -= 10
+                    player.prevent_collisions('y')
+                    # player.animate()
+                elif 'DOWN' in self.act_type:
+                    player.rect.y += 5
+                    player.movement[1] += 5
+                    player.prevent_collisions('y')
+                    # player.animate()
 
     def exit_level(self):
         global level_exit
