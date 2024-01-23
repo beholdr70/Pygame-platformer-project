@@ -14,6 +14,8 @@ hint_group = pygame.sprite.Group()
 spawnpoint = None
 level_exit = False
 level_sfx_channel = pygame.mixer.Channel(4)
+game_finale = False
+final_cutscene_time = 0
 
 
 class LevelTile(pygame.sprite.Sprite):
@@ -50,7 +52,7 @@ class InteractiveObj(pygame.sprite.Sprite):
         self.rect = surface.get_rect(topleft=position)
         self.image = None
         self.act_type = action_type if action_type else ''
-        if 'WINDZONE' in self.act_type:
+        if 'WINDZONE' in self.act_type or 'FINALE' in self.act_type:
             self.activation_type = 'Passive'
         else:
             self.activation_type = 'Interaction'
@@ -58,8 +60,12 @@ class InteractiveObj(pygame.sprite.Sprite):
             self.button_id = button_id
 
     def interact(self, player=None):
+        global game_finale, final_cutscene_time
         if 'EXIT' in self.act_type:
             self.exit_level()
+        if 'FINALE' in self.act_type:
+            game_finale = True
+            final_cutscene_time = pygame.time.get_ticks()
         if 'PLATFORM_SWITCH' in self.act_type:
             level_sfx_channel.play(pygame.mixer.Sound('Resources/Sounds/SFX/Platform Switch.wav'))
             platforms = list(filter(lambda x: x.id == self.button_id, list(level_tile_group)))
@@ -90,8 +96,8 @@ class InteractiveObj(pygame.sprite.Sprite):
         level = int(open('save_data').read()[-1]) + 1
         line = open('save_data').read()[:-1]
         save_file = open('save_data', 'w+')
-        if level > 3:
-            level = 3
+        if level > 4:
+            level = 4
         save_file.write(f'{line[:-1]} {level}')
         save_file.close()
         level_exit = True
@@ -137,6 +143,8 @@ def load(level_name):
                 button_id = obj.name[-1]
             elif 'Windzone' in str(obj.type):
                 act_type = str(obj.type).split(', ')[1].upper()
+            elif 'Finale' in str(obj.type):
+                act_type = 'FINALE'
             if 'Graphic' in str(obj.type):
                 if act_type:
                     act_type += ' GRAPHIC'

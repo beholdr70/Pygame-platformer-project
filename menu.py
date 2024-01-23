@@ -9,14 +9,20 @@ options_state = False
 menu_state = True
 zoom = 26
 size = (16 * zoom, 9 * zoom)
+font = pygame.font.Font('Resources/Font/ElixiR.ttf', 16)
 
 menu_sfx_channel = pygame.mixer.Channel(2)
 
+the_end_title = pygame.transform.scale(font.render('The End', True, "mediumturquoise"),
+                                       (font.size('The End' * 2)[0], 32))
+the_end_title.set_alpha(0)
 
-def draw_outline(surf, pos, screen, color='White'):
+
+def draw_outline(surf, pos, screen, color='White', alpha=255):
     mask = pygame.mask.from_surface(surf)
     new_surf = mask.to_surface(setcolor=color)
     new_surf.set_colorkey((0, 0, 0))
+    new_surf.set_alpha(alpha)
     for pos_mask in [(pos[0] - 1, pos[1]), (pos[0] + 1, pos[1]), (pos[0], pos[1] + 1), (pos[0], pos[1] - 1)]:
         screen.blit(new_surf, pos_mask)
 
@@ -25,7 +31,7 @@ class ImageButton:
     def __init__(self, x, y, text=None, sound_path=None, img=None):
         self.x = x
         self.y = y
-        self.font = pygame.font.Font('Resources/Font/ElixiR.ttf', 16)
+        self.font = font
         self.text = text
         self.hover_text = f'> {self.text} <'
         if text:

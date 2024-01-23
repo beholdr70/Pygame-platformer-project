@@ -174,7 +174,7 @@ def draw_background():
     speed = 0
     for i in background:
         speed += 0.5
-        for x in range(5):
+        for x in range(15):
             mult = speed + 1
             if menu.menu_state:
                 pos = x * (size[0] + 0.5) - parallax_background_offset
@@ -247,9 +247,13 @@ if __name__ == '__main__':
 
         if not pause:
             if not menu.menu_state:
+
                 if level_data.level_exit:
                     cutscene = True
                     point = size[0] + 60
+                elif level_data.game_finale:
+                    cutscene = True
+                    point = list(filter(lambda x: 'FINALE' in x.act_type, interactive_group))[0].rect.center[0]
 
                 if cutscene:
                     # play cutscene
@@ -260,18 +264,28 @@ if __name__ == '__main__':
                     fade_in_out.set_alpha(fade_in_alpha)
                     if point == spawnpoint[0]:
                         fade_in_alpha -= 1
-                    else:
+                    elif level_data.level_exit:
                         fade_in_alpha += 4
                     player = list(player_group)[0]
                     camera_update(player)
                     if player.rect.left < point:
                         player.rect.x += 1
                         player.movement[0] += 1
+                        player.dash = False
+                        player.movement[1] = 0
                         player.animate()
                         player.sound()
-                    else:
+                    elif level_data.game_finale and player.rect.left > point + 2:
+                        player.rect.x -= 1
+                        player.movement[0] -= 1
+                        player.dash = False
+                        player.movement[1] = 0
+                        player.animate()
+                        player.sound()
+                    elif not level_data.game_finale:
                         if point == spawnpoint[0]:
                             cutscene = False
+                            fade_in_alpha = 0
                         else:
                             for group in [player_group, decor_front_group, decor_back_group, player_group, hint_group,
                                           background, interactive_group, platform_group]:
@@ -284,6 +298,13 @@ if __name__ == '__main__':
                             music_channel.stop()
                             ambience_channel.stop()
                             point = spawnpoint[0]
+                    else:
+                        player.movement = [0, 0]
+                        player.animate()
+                        if level_data.final_cutscene_time + 5000 <= pygame.time.get_ticks():
+                            fade_in_alpha += 0.5
+                        if level_data.final_cutscene_time + 13000 <= pygame.time.get_ticks():
+                            menu.the_end_title.set_alpha(menu.the_end_title.get_alpha() + 1)
 
                 else:
                     # player update
@@ -332,6 +353,11 @@ if __name__ == '__main__':
             # Fading into the level at the start
             if cutscene:
                 display.blit(fade_in_out, (0, 0))
+                if level_data.game_finale:
+                    pos = (display.get_rect().center[0] - menu.the_end_title.get_width() // 2,
+                           display.get_rect().center[1] - menu.the_end_title.get_height() // 2)
+                    menu.draw_outline(menu.the_end_title, pos, display, alpha=menu.the_end_title.get_alpha() - 4)
+                    display.blit(menu.the_end_title, pos)
         else:
             parallax_background_offset += 0.5
             display.blit(menu.logo, (15, 15))

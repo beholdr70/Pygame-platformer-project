@@ -5,11 +5,11 @@
     },
     "activeFile": "levels/TMX/level_3.tmx",
     "expandedProjectPaths": [
-        "levels/TSX",
         "levels/TMX",
         "levels",
         ".",
-        ".idea"
+        ".idea",
+        "levels/TSX"
     ],
     "file.lastUsedOpenFilter": "Все файлы (*)",
     "fileStates": {
@@ -40,53 +40,70 @@
         },
         "levels/TMX/level_1.tmx": {
             "expandedGroupLayers": [
+                19,
                 20,
-                6,
-                19
-            ],
-            "expandedObjectLayers": [
-                18,
-                9,
                 6
             ],
+            "expandedObjectLayers": [
+                9,
+                6,
+                18
+            ],
             "scale": 1,
-            "selectedLayer": 11,
+            "selectedLayer": 6,
             "viewCenter": {
-                "x": 99,
-                "y": 145
+                "x": 758,
+                "y": 362
             }
         },
         "levels/TMX/level_2.tmx": {
             "expandedGroupLayers": [
-                4,
-                20
+                20,
+                4
             ],
             "expandedObjectLayers": [
-                9,
                 4,
+                9,
                 8
             ],
             "scale": 4,
-            "selectedLayer": 15,
+            "selectedLayer": 9,
             "viewCenter": {
-                "x": 757,
-                "y": 807.75
+                "x": 527,
+                "y": 446.75
             }
         },
         "levels/TMX/level_3.tmx": {
             "expandedGroupLayers": [
-                3,
-                20
+                20,
+                3
             ],
             "expandedObjectLayers": [
-                9,
-                4
+                4,
+                9
             ],
-            "scale": 0.33,
-            "selectedLayer": 11,
+            "scale": 2,
+            "selectedLayer": 13,
             "viewCenter": {
-                "x": 1000.0000000000001,
-                "y": -48.4848484848485
+                "x": 415.5,
+                "y": 295
+            }
+        },
+        "levels/TMX/level_4.tmx": {
+            "expandedGroupLayers": [
+                11,
+                5
+            ],
+            "expandedObjectLayers": [
+                11,
+                12,
+                13
+            ],
+            "scale": 1,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 324,
+                "y": 399
             }
         },
         "levels/TSX/BackGround.tsx": {
@@ -126,7 +143,7 @@
         }
     },
     "last.externalTilesetPath": "C:/Users/Bee/PycharmProjects/Pygame-platformer-project/levels/TSX",
-    "last.imagePath": "C:/Users/Bee/PycharmProjects/Pygame-platformer-project/levels/Buttons",
+    "last.imagePath": "C:/Users/Bee/PycharmProjects/Pygame-platformer-project/levels/levels_assets/Glacial-mountains-parallax-background_vnitti_v3/Glacial-mountains-parallax-background_vnitti/Layers",
     "map.height": 40,
     "map.lastUsedFormat": "tmx",
     "map.renderOrder": null,
