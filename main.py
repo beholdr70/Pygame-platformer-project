@@ -32,6 +32,7 @@ pause_surf.set_alpha(75)
 current_level, spawnpoint, platform_group, decor_back_group, decor_front_group = None, None, None, None, None
 interactive_group, hint_group, hint_alpha = None, None, None
 parallax_background_offset = 0
+offset = [0, 0]
 
 #  Player Related Variable
 player_group = pygame.sprite.GroupSingle()
@@ -139,7 +140,7 @@ def close_game():
 
 # I refuse to elaborate on the matter of this monstrosity
 def camera_update(player_c):
-    global parallax_background_offset
+    global parallax_background_offset, offset
 
     level_groups = (decor_front_group, decor_back_group, platform_group, interactive_group, hint_group)
 
@@ -183,7 +184,9 @@ def draw_background():
                     pos = x * (size[0] + 0.5) - parallax_background_offset
             else:
                 pos = floor(x * size[0] - parallax_background_offset * mult - size[0] * 2)
-            if not (menu.menu_state and background.index(i) >= 2):
+            if i == 'Graphic':
+                hint_group.draw(display)
+            elif not (menu.menu_state and background.index(i) >= 2):
                 display.blit(i, (pos, 0))
     if menu.menu_state:
         for x in range(-2, 3):
@@ -299,11 +302,14 @@ if __name__ == '__main__':
                             ambience_channel.stop()
                             point = spawnpoint[0]
                     else:
+                        hint_alpha += 0.2
+                        if list(hint_group)[0].rect.center[1] > 20 and player.frame % 10 == 0:
+                            list(hint_group)[0].rect.y -= 1
                         player.movement = [0, 0]
                         player.animate()
-                        if level_data.final_cutscene_time + 5000 <= pygame.time.get_ticks():
+                        if level_data.final_cutscene_time + 15000 <= pygame.time.get_ticks():
                             fade_in_alpha += 0.5
-                        if level_data.final_cutscene_time + 13000 <= pygame.time.get_ticks():
+                        if level_data.final_cutscene_time + 23000 <= pygame.time.get_ticks():
                             menu.the_end_title.set_alpha(menu.the_end_title.get_alpha() + 1)
 
                 else:
@@ -341,14 +347,15 @@ if __name__ == '__main__':
         if not menu.menu_state:
 
             decor_back_group.draw(display)
-            hint_group.draw(display)
+            if not level_data.game_finale:
+                hint_group.draw(display)
             player_group.draw(display)
             platform_group.draw(display)
             decor_front_group.draw(display)
             if not cutscene:
                 playerFX_group.draw(display)
-            for fx in list(filter(lambda x: x.fx_type == 'DASH_UI', list(playerFX_group))):
-                fx.draw_shine(display)
+                for fx in list(filter(lambda x: x.fx_type == 'DASH_UI', list(playerFX_group))):
+                    fx.draw_shine(display)
 
             # Fading into the level at the start
             if cutscene:

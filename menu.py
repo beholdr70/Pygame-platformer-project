@@ -89,7 +89,7 @@ class ImageButton:
 
             if purpose == 'RESET':
                 file = open('save_data', 'w')
-                file.write('current_level = 1')
+                file.write(f'current_level = 1')
                 file.close()
             if any(purpose == i for i in ['APPLY', 'START', 'RESUME']):
                 if purpose == 'START':

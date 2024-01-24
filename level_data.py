@@ -133,8 +133,11 @@ def load(level_name):
     for obj in tile_data.objects:
         button_id = None
         act_type = None
-        if obj.type == 'Background':
-            background_group.append(pygame.transform.scale(obj.image.convert_alpha(), main.size))
+        if 'Background' in str(obj.type):
+            if 'Graphic' not in str(obj.type):
+                background_group.append(pygame.transform.scale(obj.image.convert_alpha(), main.size))
+            else:
+                background_group.append('Graphic')
         if 'Checkbox' in str(obj.type):
             if 'Exit' in str(obj.type):
                 act_type = 'EXIT'
@@ -153,7 +156,7 @@ def load(level_name):
             interactive_group.add(
                 InteractiveObj((obj.x - 16, obj.y), pygame.Surface((int(obj.width), int(obj.height))), act_type,
                                button_id=button_id))
-        if 'Graphic' in str(obj.type):
+        elif 'Graphic' in str(obj.type):
             if obj.image:
                 hint_group.add(LevelTile((obj.x - 16, obj.y),
                                          pygame.transform.scale(obj.image.convert_alpha(), (obj.width, obj.height))))

@@ -1,4 +1,4 @@
 screen_size = [1920, 1080]
-fullscreen = True
-music_volume = 0.37
-sfx_volume = 0.79
+fullscreen = False
+music_volume = 0.99
+sfx_volume = 0.99

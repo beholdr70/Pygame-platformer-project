@@ -3,13 +3,13 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "levels/TMX/level_4.tmx",
+    "activeFile": "levels/TMX/level_3.tmx",
     "expandedProjectPaths": [
-        "levels/TSX",
-        "levels",
-        ".idea",
         "levels/TMX",
-        "."
+        "levels",
+        ".",
+        ".idea",
+        "levels/TSX"
     ],
     "file.lastUsedOpenFilter": "Все файлы (*)",
     "fileStates": {
@@ -41,18 +41,18 @@
         "levels/TMX/level_1.tmx": {
             "expandedGroupLayers": [
                 20,
-                19,
-                6
+                6,
+                19
             ],
             "expandedObjectLayers": [
-                18,
-                6
+                6,
+                18
             ],
             "scale": 1,
-            "selectedLayer": 6,
+            "selectedLayer": 11,
             "viewCenter": {
-                "x": 516.5,
-                "y": 320.5
+                "x": 1168,
+                "y": 367
             }
         },
         "levels/TMX/level_2.tmx": {
@@ -74,18 +74,18 @@
         },
         "levels/TMX/level_3.tmx": {
             "expandedGroupLayers": [
-                20,
-                3
+                3,
+                20
             ],
             "expandedObjectLayers": [
                 9,
                 4
             ],
-            "scale": 2,
+            "scale": 0.75,
             "selectedLayer": 13,
             "viewCenter": {
-                "x": 543.75,
-                "y": 463.75
+                "x": 578.6666666666665,
+                "y": 582.6666666666665
             }
         },
         "levels/TMX/level_4.tmx": {
@@ -95,14 +95,14 @@
             ],
             "expandedObjectLayers": [
                 12,
-                11,
-                13
+                13,
+                11
             ],
-            "scale": 0.75,
+            "scale": 1,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 1406.6666666666665,
-                "y": 373.33333333333337
+                "x": 1735,
+                "y": 332
             }
         },
         "levels/TSX/BackGround.tsx": {
@@ -158,16 +158,18 @@
         "levels/TSX/Buttons.tsx",
         "levels/TMX/level_4.tmx",
         "levels/TSX/BackGround.tsx",
-        "levels/TSX/Background Dawn.tsx"
+        "levels/TSX/Background Dawn.tsx",
+        "levels/TMX/level_1.tmx",
+        "levels/TMX/level_3.tmx"
     ],
     "project": "level.tiled-project",
     "recentFiles": [
         "levels/TSX/Buttons.tsx",
-        "levels/TSX/Background Dawn.tsx",
-        "levels/TSX/BackGround.tsx",
         "levels/TMX/level_4.tmx",
-        "levels/TMX/level_3.tmx",
+        "levels/TSX/BackGround.tsx",
+        "levels/TSX/Background Dawn.tsx",
         "levels/TMX/level_1.tmx",
+        "levels/TMX/level_3.tmx",
         "levels/TMX/level_2.tmx",
         "levels/TSX/Legacy Adventure Tileset.tsx",
         "levels/TSX/Pixel Platformer Tileset.tsx",
